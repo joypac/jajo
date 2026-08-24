@@ -28,7 +28,7 @@ const el = {
   grid: document.getElementById('bt-cmd-grid')
 };
 
-let enemy = null, enemySpr = null, enemyFlash = 0, enemyShake = 0, enemyDead = false;
+let enemy = null, enemySpr = null, enemySprHit = null, heroHitCache = null, enemyFlash = 0, enemyShake = 0, enemyDead = false;
 let heroFlash = 0, t = 0;
 let phase = 'intro';          // intro | menu | sub | msg | over
 let msgs = [], afterMsgs = null;
@@ -303,11 +303,7 @@ function drawBattlefield() {
     const jitter = enemyShake > 0 ? (Math.random() - 0.5) * 4 : 0;
     const ex = (w * EX - spr.width / 2 + jitter) | 0;
     const ey = (h * EY - spr.height / 2 + bob) | 0;
-    if (enemyFlash > 0 && Math.floor(enemyFlash * 20) % 2 === 0) {
-      blit(ctx, tinted(spr, '#ffffff'), ex, ey);
-    } else {
-      blit(ctx, spr, ex, ey);
-    }
+    blit(ctx, (enemyFlash > 0 && Math.floor(enemyFlash * 20) % 2 === 0) ? enemySprHit : spr, ex, ey);
   }
 
   // Bernardo de costas
@@ -315,7 +311,7 @@ function drawBattlefield() {
   const idx = 0;
   // o Bernardo aparece maior no combate (fica melhor a ler)
   const hx = (w * HX - 16) | 0, hy = (h * HY - 16) | 0;
-  const heroSpr = (heroFlash > 0 && Math.floor(heroFlash * 20) % 2 === 0) ? tinted(set[idx], '#ff8a7a') : set[idx];
+  const heroSpr = (heroFlash > 0 && Math.floor(heroFlash * 20) % 2 === 0) ? heroHitCache : set[idx];
   ctx.imageSmoothingEnabled = false;
   ctx.drawImage(heroSpr, hx, hy, 32, 32);
 
@@ -336,6 +332,8 @@ register('battle', {
     enemy.maxHp = base.hp;
     enemy.hp = base.hp;
     enemySpr = ENEMY_SPRITES[base.sprite];
+    enemySprHit = enemySpr ? tinted(enemySpr, '#ffffff') : null;      // pré-calculado: evita criar canvas a cada frame
+    heroHitCache = tinted(CHARS.bernardo.up[0], '#ff8a7a');
     enemyDead = false; enemyFlash = 0; enemyShake = 0; heroFlash = 0;
     dmgPops = []; msgs = []; afterMsgs = null; t = 0;
 

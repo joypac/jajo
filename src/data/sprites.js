@@ -469,17 +469,20 @@ ENEMY_SPRITES.semCafe = paint(48, 48, (px) => {
 });
 
 ENEMY_SPRITES.esActor = paint(48, 48, (px) => {
-  px(14, 4, 20, 6, '#c9a04a');                                // ponto de interrogacao
-  px(10, 8, 6, 8, '#c9a04a'); px(32, 8, 6, 10, '#c9a04a');
-  px(26, 16, 8, 8, '#c9a04a');
-  px(20, 22, 8, 8, '#c9a04a');
-  px(20, 30, 8, 5, '#c9a04a');
-  px(20, 38, 8, 7, '#c9a04a');
-  px(14, 4, 20, 2, '#f0c96a'); px(20, 38, 8, 2, '#f0c96a');
-  px(21, 24, 3, 4, '#f6f2e2'); px(25, 24, 3, 4, '#f6f2e2');   // olhinhos
-  px(22, 25, 1, 2, '#241a2b'); px(26, 25, 1, 2, '#241a2b');
-  px(18, 34, 4, 3, '#b8465a'); px(26, 34, 4, 3, '#b8465a');   // laco
-  px(22, 34, 4, 3, '#8f3448');
+  const G = '#c9a04a', L = '#f0c96a', D = '#8f6f28';
+  // ponto de interrogacao
+  px(16, 3, 16, 7, G);  px(16, 3, 16, 2, L);
+  px(11, 6, 6, 9, G);   px(11, 6, 2, 9, D);
+  px(31, 6, 6, 11, G);  px(35, 6, 2, 11, L);
+  px(27, 15, 10, 7, G);
+  px(22, 20, 9, 7, G);
+  px(20, 26, 9, 9, G);  px(20, 26, 2, 9, D);
+  px(20, 39, 9, 8, G);  px(20, 39, 9, 2, L);
+  // olhinhos e laco, para ficar uma personagem e nao um simbolo
+  px(17, 8, 4, 5, '#f6f2e2'); px(26, 8, 4, 5, '#f6f2e2');
+  px(18, 10, 2, 3, '#241a2b'); px(27, 10, 2, 3, '#241a2b');
+  px(15, 30, 5, 5, '#b8465a'); px(29, 30, 5, 5, '#b8465a');
+  px(20, 31, 9, 3, '#8f3448');
 });
 
 ENEMY_SPRITES.drama = paint(48, 48, (px) => {

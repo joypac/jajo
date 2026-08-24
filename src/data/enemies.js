@@ -20,6 +20,11 @@ export const ATTACKS = [
     after: e => `${e} aceitou. Ninguém recusa.`
   },
   {
+    name: 'FAZER DE CONTA', min: 0, max: 22,
+    text: () => 'BERNARDO faz de conta que não é nada.',
+    after: (e, d) => d === 0 ? 'Não resultou minimamente.' : 'Resultou. Ninguém sabe porquê.'
+  },
+  {
     name: 'MANDAR MEME', min: 10, max: 16,
     text: () => 'BERNARDO mandou um meme.',
     after: () => 'Era mesmo à medida. Impressionante.'
