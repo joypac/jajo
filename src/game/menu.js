@@ -4,7 +4,7 @@
 import { ITEMS, ITEM_ORDER } from '../data/items.js';
 import { DADOS } from '../data/dados.js';
 import { state, removeItem, healHp, addDrama, addEnergia, addSono, knowsFact } from './state.js';
-import { held, consume } from '../engine/input.js';
+import { consume } from '../engine/input.js';
 import { sfx } from '../engine/audio.js';
 import { refreshHud } from './ui.js';
 
@@ -15,7 +15,6 @@ const descEl = document.getElementById('menu-desc');
 const footEl = document.getElementById('menu-foot');
 
 let open = false, tab = 0, sel = 0;
-let prevUp = false, prevDown = false, prevLeft = false, prevRight = false;
 
 export function isMenuOpen() { return open; }
 
@@ -127,12 +126,11 @@ export function updateMenu() {
   if (consume('menu') || consume('cancel')) { closeMenu(); return; }
   if (consume('a')) { useSelected(); return; }
 
-  if (held.up && !prevUp) move(-1);
-  if (held.down && !prevDown) move(1);
-  if ((held.left && !prevLeft) || (held.right && !prevRight)) {
+  if (consume('dir:up')) move(-1);
+  if (consume('dir:down')) move(1);
+  if (consume('dir:left') || consume('dir:right')) {
     tab = tab === 0 ? 1 : 0; sel = 0; sfx('blip'); render();
   }
-  prevUp = held.up; prevDown = held.down; prevLeft = held.left; prevRight = held.right;
 }
 
 footEl.onpointerdown = e => { e.preventDefault(); closeMenu(); };

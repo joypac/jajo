@@ -8,7 +8,7 @@ import { ENEMY_SPRITES, CHARS } from '../data/sprites.js';
 import { ITEMS, ITEM_ORDER } from '../data/items.js';
 import { draw as blit, tinted } from '../engine/sprites.js';
 import { fx } from '../engine/fx.js';
-import { held, consume } from '../engine/input.js';
+import { consume } from '../engine/input.js';
 import { playMusic, sfx, musicVolume } from '../engine/audio.js';
 import { register, go } from '../engine/scene.js';
 import { state, damage, healHp, addDrama, addEnergia, addSono, removeItem } from './state.js';
@@ -33,7 +33,6 @@ let heroFlash = 0, t = 0;
 let phase = 'intro';          // intro | menu | sub | msg | over
 let msgs = [], afterMsgs = null;
 let options = [], sel = 0, cols = 2;
-let prevU = false, prevD = false, prevL = false, prevR = false;
 let dmgPops = [];
 let logTyping = 0, logFull = '';
 
@@ -393,15 +392,14 @@ register('battle', {
     const n = options.length;
     if (n) {
       let moved = false;
-      if (held.up && !prevU) { sel = (sel - cols + n) % n; moved = true; }
-      if (held.down && !prevD) { sel = (sel + cols) % n; moved = true; }
+      if (consume('dir:up')) { sel = (sel - cols + n) % n; moved = true; }
+      if (consume('dir:down')) { sel = (sel + cols) % n; moved = true; }
       if (cols > 1) {
-        if (held.left && !prevL) { sel = (sel - 1 + n) % n; moved = true; }
-        if (held.right && !prevR) { sel = (sel + 1) % n; moved = true; }
+        if (consume('dir:left')) { sel = (sel - 1 + n) % n; moved = true; }
+        if (consume('dir:right')) { sel = (sel + 1) % n; moved = true; }
       }
       if (moved) { sfx('blip'); renderOptions(); }
     }
-    prevU = held.up; prevD = held.down; prevL = held.left; prevR = held.right;
   },
 
   draw() {

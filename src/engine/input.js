@@ -32,7 +32,7 @@ const KEYS = {
 export function initInput() {
   window.addEventListener('keydown', e => {
     const dir = KEYS[e.code];
-    if (dir) { held[dir] = true; activity = performance.now(); e.preventDefault(); }
+    if (dir) { held[dir] = true; press('dir:' + dir); e.preventDefault(); }
     if (e.code === 'Space' || e.code === 'Enter' || e.code === 'KeyZ') { press('a'); e.preventDefault(); }
     if (e.code === 'Escape' || e.code === 'KeyI' || e.code === 'KeyX') { press('menu'); e.preventDefault(); }
     if (e.code === 'KeyM') press('mute');
@@ -48,7 +48,7 @@ export function initInput() {
     const dir = btn.dataset.dir;
     const on = e => {
       e.preventDefault();
-      held[dir] = true; btn.classList.add('on'); activity = performance.now();
+      held[dir] = true; btn.classList.add('on'); press('dir:' + dir);
       if (btn.setPointerCapture && e.pointerId != null) { try { btn.setPointerCapture(e.pointerId); } catch (_) {} }
     };
     const off = e => { if (e) e.preventDefault(); held[dir] = false; btn.classList.remove('on'); };
