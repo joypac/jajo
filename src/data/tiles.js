@@ -43,6 +43,27 @@ const caminho = speckled('#c9a97a', '#b0906a', '#ddc294');
 const pedraChao = speckled('#6e6e88', '#5a5a72', '#8b8ba0');
 const chaoFinal = grassTile('#5c8f6a', '#4a7757', '#74a67f', false);
 
+/* Fátima: calçada clara */
+const calcada = paint(T, T, (px) => {
+  px(0, 0, T, T, '#ddd8cc');
+  for (let y = 0; y < T; y += 4) for (let x = 0; x < T; x += 4) {
+    const r = n(x, y, 7);
+    px(x, y, 3, 3, r > 0.5 ? '#e8e4da' : '#cfc9bb');
+  }
+  px(0, 0, T, 1, '#bdb7a8'); px(0, 0, 1, T, '#bdb7a8');
+});
+
+/* Alentejo: terra seca e seara */
+const terraSeca = speckled('#d9b878', '#c4a066', '#eed6a0');
+const seara = paint(T, T, (px) => {
+  px(0, 0, T, T, '#d8bd70');
+  for (let x = 0; x < T; x += 3) {
+    const h = 5 + Math.floor(n(x, 0, 9) * 5);
+    px(x + 1, T - h, 1, h, '#c2a353');
+    px(x + 1, T - h - 2, 1, 2, '#efd88c');
+  }
+});
+
 const parede = paint(T, T, (px) => {
   px(0, 0, T, T, '#3a3550');
   px(0, 0, T, 2, '#4a4468'); px(0, 14, T, 2, '#282342');
@@ -64,6 +85,7 @@ function arvoreTile(dark, mid, light, trunk) {
   });
 }
 const arvore = arvoreTile('#256b34', '#2f8040', '#43a355', '#4a3320');
+const oliveiraTile = arvoreTile('#5c7a52', '#7d9c6a', '#96b585', '#6b5a44');
 const arvoreFloresta = arvoreTile('#1d5233', '#26653e', '#357c4d', '#3b2a1c');
 
 function aguaFrame(off) {
@@ -85,6 +107,10 @@ export const TILES = {
   'D': { frames: [relvaEscura], solid: false, encounter: true },
   'S': { frames: [pedraChao], solid: false },
   'G': { frames: [chaoFinal], solid: false },
+  'P': { frames: [calcada], solid: false },
+  'A': { frames: [terraSeca], solid: false },
+  'C': { frames: [seara], solid: false },
+  'O': { frames: [oliveiraTile], solid: true },
   '#': { frames: [arvore], solid: true },
   'T': { frames: [arvoreFloresta], solid: true },
   'W': { frames: [parede], solid: true },

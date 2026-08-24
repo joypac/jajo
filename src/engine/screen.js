@@ -38,7 +38,7 @@ export function resize() {
   const usableH = (portrait && touch) ? availH * 0.70 : availH;
   let vh = Math.round(usableH / s);
   if (vh < 140) { vh = 140; s = Math.min(s, usableH / 140); }
-  if (vh > 400) vh = 400;
+  if (vh > 280) { vh = 280; s = Math.min(s, usableH / 280); }
 
   view.w = targetW;
   view.h = vh;

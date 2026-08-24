@@ -6,23 +6,23 @@
 export const ATTACKS = [
   {
     name: 'MANDAR ÁUDIO', min: 9, max: 15,
-    text: e => `BERNARDO mandou um áudio de 7 minutos.`,
-    after: e => `${e} ouviu tudo. ${e} não estava preparado.`
+    text: () => 'BERNARDO mandou um áudio de 7 minutos.',
+    after: e => `${e} ouviu tudo. Não estava preparado.`
   },
   {
     name: 'DIZER "OK"', min: 6, max: 11,
-    text: e => `BERNARDO disse "ok".`,
-    after: e => `Só isso. Foi devastador.`
+    text: () => 'BERNARDO respondeu apenas "ok".',
+    after: () => 'Só isso. Foi devastador.'
   },
   {
-    name: 'FAZER DE CONTA', min: 0, max: 22,
-    text: e => `BERNARDO faz de conta que não é nada.`,
-    after: (e, d) => d === 0 ? `Não resultou minimamente.` : `Resultou. Ninguém sabe porquê.`
+    name: 'OFERECER CAFÉ', min: 8, max: 14,
+    text: () => 'BERNARDO ofereceu um café.',
+    after: e => `${e} aceitou. Ninguém recusa.`
   },
   {
     name: 'MANDAR MEME', min: 10, max: 16,
-    text: e => `BERNARDO mandou um meme.`,
-    after: e => `Era mesmo à medida. Impressionante.`
+    text: () => 'BERNARDO mandou um meme.',
+    after: () => 'Era mesmo à medida. Impressionante.'
   }
 ];
 
@@ -32,36 +32,36 @@ export const DRAMA_DAMAGE = 37;
 export const DRAMA_LINES = [
   'BERNARDO suspira olhando pela janela.',
   'BERNARDO diz "não, está tudo bem" com aquele tom.',
-  'BERNARDO relembra uma conversa de 2019.',
+  'BERNARDO faz uma pausa dramática de sete segundos.',
   'BERNARDO põe uma música triste de propósito.',
-  'BERNARDO escreve uma mensagem enorme. Apaga. Escreve "ok".'
+  'BERNARDO lembra a toda a gente que o Jajo estudou teatro.'
 ];
 
 /* ---------- inimigos ---------- */
 export const ENEMIES = {
-  ansiedade: {
-    id: 'ansiedade', name: 'ANSIEDADE', sprite: 'ansiedade', hp: 34, color: '#5b3390',
+  sono: {
+    id: 'sono', name: 'SONO', sprite: 'sono', hp: 32, color: '#5c6bb0',
     attacks: [
-      { name: 'PENSAMENTO INTRUSIVO', min: 4, max: 8 },
-      { name: 'E SE CORRER MAL?', min: 3, max: 9 }
+      { name: 'BOCEJO CONTAGIANTE', min: 4, max: 8 },
+      { name: 'SÃO SÓ CINCO MINUTOS', min: 3, max: 9 }
     ],
-    death: 'A ANSIEDADE foi-se embora. Volta logo à noite, mas pronto.'
+    death: 'O SONO foi derrotado. Volta hoje por volta das duas da manhã.'
   },
-  overthinking: {
-    id: 'overthinking', name: 'OVERTHINKING', sprite: 'overthinking', hp: 42, color: '#6f5c9c',
+  semCafe: {
+    id: 'semCafe', name: 'FALTA DE CAFÉ', sprite: 'semCafe', hp: 36, color: '#8a5a34',
     attacks: [
-      { name: 'REPETIR A CONVERSA NA CABEÇA', min: 4, max: 9 },
-      { name: 'ANALISAR UMA VÍRGULA', min: 2, max: 7 }
+      { name: 'TREMER LIGEIRAMENTE', min: 4, max: 9 },
+      { name: 'OLHAR VAZIO', min: 3, max: 8 }
     ],
-    death: 'O OVERTHINKING desapareceu. Ainda ficou a pensar no assunto.'
+    death: 'A FALTA DE CAFÉ desapareceu. Alguém, algures, carregou num botão.'
   },
-  faltaResposta: {
-    id: 'faltaResposta', name: 'FALTA DE RESPOSTA', sprite: 'faltaResposta', hp: 28, color: '#8f96b8',
+  esActor: {
+    id: 'esActor', name: '"ÉS ACTOR?"', sprite: 'esActor', hp: 28, color: '#c9a04a',
     attacks: [
-      { name: 'VISTO ÀS 21:04', min: 5, max: 10 },
-      { name: 'SILÊNCIO ABSOLUTO', min: 3, max: 8 }
+      { name: 'MAS ESTUDASTE TEATRO', min: 5, max: 10 },
+      { name: 'FAZ AÍ UMA CENA', min: 3, max: 8 }
     ],
-    death: 'A FALTA DE RESPOSTA não respondeu. Coerente até ao fim.'
+    death: '"ÉS ACTOR?" foi derrotado. Vai voltar num jantar de família.'
   },
   drama: {
     id: 'drama', name: 'DRAMA', sprite: 'drama', hp: 38, color: '#d43f7a',
@@ -73,7 +73,8 @@ export const ENEMIES = {
   },
   boss: {
     id: 'boss', name: 'O GRANDE DESCONHECIDO', sprite: 'boss', hp: 60, color: '#4a3a6b',
-    boss: true, noFlee: 'O GRANDE DESCONHECIDO não te deixa fugir. Ele também não sabe porquê.',
+    boss: true,
+    noFlee: 'O GRANDE DESCONHECIDO não te deixa fugir. Ele também não sabe porquê.',
     attacks: [
       { name: 'ENCOLHER OS OMBROS', min: 1, max: 3 },
       { name: 'NÃO SABER', min: 1, max: 4 },
@@ -83,12 +84,12 @@ export const ENEMIES = {
   }
 };
 
-/* quem aparece na relva escura da floresta */
-export const WILD = ['ansiedade', 'overthinking', 'faltaResposta', 'drama'];
+/* quem aparece na relva escura */
+export const WILD = ['sono', 'semCafe', 'esActor', 'drama'];
 
 /* frases da vitória */
 export const WIN_LINES = [
   'BERNARDO ganhou 0 XP. O XP não faz nada neste jogo.',
   'BERNARDO ganhou 0 XP. Continua nível 1. Sempre.',
-  'BERNARDO ganhou 0 XP, mas ganhou tempo. Não, também não.'
+  'BERNARDO ganhou 0 XP, mas está mais perto do Jajo. Provavelmente.'
 ];

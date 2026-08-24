@@ -115,7 +115,21 @@ export const CHARS = {
   aldeao2:  makeCharacter({ hair: '#d0682f', hair2: '#e88a4a', shirt: '#8a5fc0', pants: '#3a3a5c' }),
   aldeao3:  makeCharacter({ hair: '#2a2233', hair2: '#443a52', shirt: '#c9484f', pants: '#43364f', skin: '#c98d63' }),
   lojista:  makeCharacter({ hair: '#5a3a22', hair2: '#7a5233', shirt: '#c9a04a', pants: '#5a4630', skin: '#f0c79c' }),
-  sabio:    makeCharacter({ hair: '#eef0f5', hair2: '#ffffff', shirt: '#6f7bd6', pants: '#4a5290', skin: '#e5c0a0' })
+  sabio:    makeCharacter({ hair: '#eef0f5', hair2: '#ffffff', shirt: '#6f7bd6', pants: '#4a5290', skin: '#e5c0a0' }),
+  /* Fátima */
+  padre:    makeCharacter({ hair: '#d8d8e4', hair2: '#f0f0f8', shirt: '#22202e', pants: '#22202e', shoes: '#15131f', skin: '#e8bd93' }),
+  pastor1:  makeCharacter({ hair: '#8a5a2e', hair2: '#a87038', shirt: '#e0d2a8', pants: '#7a6242', skin: '#f0c79c' }),
+  pastor2:  makeCharacter({ hair: '#4a3a2a', hair2: '#634a33', shirt: '#c9b48a', pants: '#6b5438', skin: '#e8b98c' }),
+  pastor3:  makeCharacter({ hair: '#2e2620', hair2: '#463a2e', shirt: '#d8c4a0', pants: '#5c4a30', skin: '#d9a877' }),
+  peregrino: makeCharacter({ hair: '#7a7a8c', hair2: '#9a9aac', shirt: '#8a9ab0', pants: '#4a5464', skin: '#e0b088' }),
+  peregrina: makeCharacter({ hair: '#a34a6a', hair2: '#c46886', shirt: '#e0a0b8', pants: '#6a4a5c', skin: '#f0c79c' }),
+  /* Caldas da Rainha */
+  senhor:   makeCharacter({ hair: '#b0b0bc', hair2: '#d0d0dc', shirt: '#4a8a8a', pants: '#3a4a52', skin: '#e8bd93' }),
+  ceramista: makeCharacter({ hair: '#3a2a44', hair2: '#553f60', shirt: '#c96a4a', pants: '#4a3a30', skin: '#d9a877' }),
+  senhora:  makeCharacter({ hair: '#5a4030', hair2: '#7a5a42', shirt: '#7a9c5a', pants: '#4a4438', skin: '#f0c79c' }),
+  /* outros */
+  homemMonte: makeCharacter({ hair: '#2e2620', hair2: '#463a2e', shirt: '#c9b070', pants: '#5a4a34', skin: '#c98d63' }),
+  figura:   makeCharacter({ hair: '#15131f', hair2: '#24202e', shirt: '#24202e', pants: '#1a1826', shoes: '#15131f', skin: '#6a6478', eye: '#ffd447', mouth: '#3a3448' })
 };
 
 /* ---------- galinha ---------- */
@@ -272,6 +286,130 @@ PROPS.nevoeiro = paint(32, 16, (px) => {
   px(16, 10, 14, 5, 'rgba(230,232,250,0.45)');
 });
 
+PROPS.cogumelo = paint(16, 16, (px) => {
+  px(6, 9, 4, 6, '#e8dcc0'); px(6, 9, 1, 6, '#c4b795');
+  disc(px, 8, 8, 6, '#8f2f3f');
+  disc(px, 8, 7, 5, '#c0424f');
+  px(4, 5, 3, 2, '#f2e4c0'); px(10, 8, 2, 2, '#f2e4c0'); px(8, 3, 2, 2, '#f2e4c0');
+  px(3, 13, 10, 2, '#3d8449');
+});
+
+/* ---------- HIBERNARDO ---------- */
+function camaFrame(lift, zzz) {
+  return paint(32, 32, (px) => {
+    px(3, 8, 5, 22, '#8a6238'); px(3, 8, 5, 3, '#a87a4a');     // cabeceira
+    px(26, 14, 4, 16, '#8a6238'); px(26, 14, 4, 2, '#a87a4a'); // pes da cama
+    px(5, 14, 23, 14, '#e6dccb');                              // colchao
+    px(5, 26, 23, 3, '#c0b49f');
+    px(7, 15, 9, 7, '#ffffff'); px(7, 15, 9, 1, '#d8d0c0');    // almofada
+    px(14, 16 - lift, 14, 11 + lift, '#4f86e0');               // cobertor
+    px(14, 16 - lift, 14, 2, '#6fa0f0');
+    px(18, 19 - lift, 8, 5, '#3c6cc0');                        // volume do corpo
+    px(9, 16, 7, 6, '#f2c79a');                                // cabeca
+    px(9, 15, 7, 2, '#4a3323');
+    px(10, 19, 2, 1, '#241a2b'); px(13, 19, 2, 1, '#241a2b');  // olhos fechados
+    px(11, 21, 3, 1, '#b06a5a');
+    if (zzz) {
+      px(17, 6, 5, 1, '#f6f2e2'); px(19, 7, 2, 1, '#f6f2e2'); px(17, 8, 5, 1, '#f6f2e2');
+      px(23, 2, 3, 1, '#f6f2e2'); px(24, 3, 1, 1, '#f6f2e2'); px(23, 4, 3, 1, '#f6f2e2');
+    } else {
+      px(18, 4, 5, 1, '#f6f2e2'); px(20, 5, 2, 1, '#f6f2e2'); px(18, 6, 5, 1, '#f6f2e2');
+    }
+  });
+}
+PROPS.cama = camaFrame(0, true);
+PROPS.camaFrames = [camaFrame(0, true), camaFrame(1, false)];
+
+/* ---------- Fátima ---------- */
+PROPS.igreja = paint(64, 64, (px) => {
+  px(6, 22, 52, 40, '#f2efe4');                    // corpo
+  px(6, 22, 52, 2, '#d0cabb');
+  px(4, 58, 56, 4, '#c9c2b0');
+  px(22, 6, 20, 20, '#f2efe4');                    // torre
+  px(22, 6, 20, 2, '#d0cabb');
+  px(20, 2, 24, 5, '#b8465a');                     // telhado da torre
+  px(24, 0, 16, 3, '#8f3448');
+  px(30, 10, 4, 8, '#3a3550'); px(31, 11, 2, 6, '#f2c14e');  // sino
+  px(6, 20, 52, 3, '#b8465a');
+  px(26, 36, 12, 26, '#6b4a2e');                   // porta em arco
+  px(28, 32, 8, 6, '#6b4a2e');
+  px(29, 34, 6, 24, '#8a6238');
+  px(31, 48, 2, 2, '#f2c14e');
+  px(14, 34, 8, 10, '#4a5c8c'); px(15, 35, 6, 8, '#8fd8ef');  // janelas
+  px(42, 34, 8, 10, '#4a5c8c'); px(43, 35, 6, 8, '#8fd8ef');
+  px(28, 24, 8, 8, '#4a5c8c'); px(29, 25, 6, 6, '#ffd447');   // roseacea
+});
+
+function velasFrame(f) {
+  return paint(32, 24, (px) => {
+    px(1, 16, 30, 7, '#9a9ab0'); px(1, 16, 30, 2, '#b6b6c9');
+    for (let i = 0; i < 6; i++) {
+      const x = 2 + i * 5, h = 6 + (i % 3);
+      px(x, 16 - h, 3, h, '#f6f2e2');
+      px(x, 16 - h, 1, h, '#d8d2c0');
+      const fl = (i + f) % 2;
+      px(x + 1, 16 - h - 3 - fl, 1, 3, '#ffd447');
+      px(x + 1, 16 - h - 4 - fl, 1, 1, '#fff3b0');
+    }
+  });
+}
+PROPS.velas = velasFrame(0);
+PROPS.velasFrames = [velasFrame(0), velasFrame(1)];
+
+PROPS.multidao = paint(32, 24, (px) => {
+  const heads = [[4, 10, '#4a3323'], [12, 6, '#b9b9c9'], [20, 9, '#d0682f'], [27, 7, '#2a2233']];
+  for (const [x, y, hair] of heads) {
+    px(x - 1, y + 6, 10, 18, '#3a4460');
+    disc(px, x + 3, y + 3, 4, '#241a2b');
+    disc(px, x + 3, y + 3, 3, hair);
+  }
+});
+
+PROPS.paragem = paint(32, 40, (px) => {
+  px(14, 12, 4, 28, '#6e6e88');
+  px(2, 4, 28, 14, '#3a4a70'); px(2, 4, 28, 2, '#5a6c98');
+  px(4, 7, 24, 2, '#f6f2e2'); px(4, 11, 16, 2, '#a9a6c4'); px(4, 14, 20, 1, '#a9a6c4');
+  px(2, 16, 28, 2, '#222a44');
+  px(10, 38, 12, 2, '#4a4a5c');
+});
+
+/* ---------- Caldas da Rainha ---------- */
+PROPS.ceramica = paint(48, 32, (px) => {
+  px(2, 22, 44, 4, '#8a6238'); px(2, 26, 44, 4, '#6b4a2e');   // banca
+  disc(px, 10, 16, 6, '#3f8f8f'); px(8, 8, 4, 3, '#3f8f8f');  // jarro
+  px(9, 10, 2, 4, '#57b0b0');
+  disc(px, 24, 17, 5, '#c96a4a'); px(21, 12, 6, 2, '#c96a4a');// tacho
+  px(22, 13, 2, 3, '#e08a68');
+  px(33, 12, 10, 10, '#e0d2a8'); px(34, 13, 8, 8, '#f2e8cf'); // peca indescritivel
+  px(36, 8, 3, 5, '#e0d2a8'); px(41, 10, 3, 3, '#e0d2a8');
+  px(35, 16, 2, 2, '#8a5a34'); px(39, 16, 2, 2, '#8a5a34');
+});
+
+PROPS.maco = paint(16, 16, (px) => {
+  px(4, 6, 8, 9, '#f2e8dc'); px(4, 6, 8, 3, '#b8465a');
+  px(4, 6, 1, 9, '#d0c4b4'); px(5, 4, 3, 3, '#f6f2e2');
+  px(5, 3, 1, 2, '#d8d2c0');
+  px(6, 11, 4, 1, '#8a8a9c');
+});
+
+/* ---------- Alentejo ---------- */
+PROPS.oliveira = paint(32, 40, (px) => {
+  px(13, 24, 6, 16, '#6b5a44'); px(13, 24, 2, 16, '#4a3d2e');
+  px(11, 30, 3, 6, '#6b5a44'); px(18, 28, 3, 8, '#6b5a44');
+  disc(px, 16, 18, 12, '#5c7a52');
+  disc(px, 16, 17, 10, '#7d9c6a');
+  disc(px, 11, 13, 5, '#96b585');
+  px(20, 10, 3, 2, '#96b585');
+});
+
+PROPS.placaAlentejo = paint(48, 40, (px) => {
+  px(10, 22, 4, 18, '#8a6238'); px(34, 22, 4, 18, '#8a6238');
+  px(2, 6, 44, 18, '#f2e4c0'); px(2, 6, 44, 2, '#c9b48a'); px(2, 22, 44, 2, '#a89070');
+  px(6, 11, 36, 3, '#3a3550');
+  px(6, 16, 24, 2, '#7a7488');
+  px(2, 4, 44, 2, '#8a6238');
+});
+
 PROPS.brilho = paint(8, 8, (px) => {
   px(3, 0, 2, 8, '#fff3b0'); px(0, 3, 8, 2, '#fff3b0');
   px(2, 2, 4, 4, '#ffffff');
@@ -282,40 +420,45 @@ PROPS.brilho = paint(8, 8, (px) => {
    ============================================================ */
 export const ENEMY_SPRITES = {};
 
-ENEMY_SPRITES.ansiedade = paint(48, 48, (px) => {
-  disc(px, 24, 26, 17, '#3a2158');
-  disc(px, 24, 25, 15, '#5b3390');
-  disc(px, 19, 18, 6, '#7a4fc0');
-  px(11, 20, 9, 10, '#f6f2e2'); px(28, 20, 9, 10, '#f6f2e2');
-  px(15, 24, 4, 5, '#241a2b'); px(30, 24, 4, 5, '#241a2b');
-  px(16, 36, 16, 4, '#241a2b');
-  for (let i = 0; i < 8; i++) px(17 + i * 2, 36 + (i % 2 ? -2 : 2), 2, 2, '#241a2b');
-  px(6, 8, 2, 6, '#ffd447'); px(40, 8, 2, 6, '#ffd447');
-  px(2, 22, 6, 2, '#ffd447'); px(40, 22, 6, 2, '#ffd447');
+ENEMY_SPRITES.sono = paint(48, 48, (px) => {
+  disc(px, 24, 28, 17, '#3f4a8a');
+  disc(px, 24, 27, 15, '#5c6bb0');
+  disc(px, 12, 32, 8, '#5c6bb0'); disc(px, 36, 32, 8, '#5c6bb0');
+  px(13, 24, 8, 2, '#1c2140'); px(27, 24, 8, 2, '#1c2140');   // olhos fechados
+  px(15, 26, 4, 1, '#1c2140'); px(29, 26, 4, 1, '#1c2140');
+  px(20, 33, 8, 6, '#1c2140'); px(22, 35, 4, 3, '#8a4a6a');   // boca a bocejar
+  px(14, 8, 20, 6, '#8a4a6a'); px(30, 4, 10, 8, '#8a4a6a');   // barrete
+  px(36, 2, 6, 5, '#f6f2e2');
+  px(2, 10, 7, 2, '#f6f2e2'); px(6, 12, 3, 2, '#f6f2e2'); px(2, 14, 7, 2, '#f6f2e2');
+  px(4, 2, 5, 2, '#a9a6c4'); px(7, 4, 2, 2, '#a9a6c4'); px(4, 6, 5, 2, '#a9a6c4');
 });
 
-ENEMY_SPRITES.overthinking = paint(48, 48, (px) => {
-  disc(px, 24, 26, 18, '#4a3a6b');
-  disc(px, 24, 25, 16, '#6f5c9c');
-  disc(px, 12, 30, 8, '#6f5c9c'); disc(px, 36, 30, 8, '#6f5c9c');
-  for (let a = 0; a < 26; a++) {
-    const r = 3 + a * 0.42, an = a * 0.75;
-    px(24 + Math.cos(an) * r, 22 + Math.sin(an) * r * 0.8, 2, 2, '#d8c9ff');
-  }
-  px(14, 16, 4, 4, '#f6f2e2'); px(15, 17, 2, 2, '#241a2b');
-  px(30, 14, 4, 4, '#f6f2e2'); px(31, 15, 2, 2, '#241a2b');
-  px(22, 38, 4, 4, '#f6f2e2'); px(23, 39, 2, 2, '#241a2b');
+ENEMY_SPRITES.semCafe = paint(48, 48, (px) => {
+  px(10, 16, 28, 24, '#e8e2d4');                              // chavena
+  px(10, 16, 28, 3, '#c9c2b0');
+  px(10, 37, 28, 4, '#c9c2b0');
+  px(12, 42, 24, 3, '#8a8a9c');
+  px(36, 22, 8, 12, '#e8e2d4'); px(38, 24, 4, 8, '#8a5a34');  // asa
+  px(14, 20, 20, 4, '#4a3020');                               // fundo (vazio)
+  px(16, 26, 5, 6, '#241a2b'); px(27, 26, 5, 6, '#241a2b');   // olhos tristes
+  px(16, 25, 5, 1, '#8a5a34'); px(27, 25, 5, 1, '#8a5a34');
+  px(18, 34, 12, 2, '#241a2b'); px(17, 33, 2, 2, '#241a2b'); px(29, 33, 2, 2, '#241a2b');
+  px(4, 12, 2, 8, '#8a5a34'); px(42, 12, 2, 8, '#8a5a34');
+  px(2, 26, 4, 2, '#8a5a34'); px(42, 30, 4, 2, '#8a5a34');
 });
 
-ENEMY_SPRITES.faltaResposta = paint(48, 48, (px) => {
-  px(9, 4, 30, 40, '#2b2b3d');
-  px(11, 8, 26, 30, '#8f96b8');
-  px(11, 8, 26, 30, '#7a82a8');
-  px(13, 10, 22, 26, '#aab1cf');
-  px(20, 40, 8, 2, '#5a5a72');
-  px(17, 20, 4, 4, '#2b2b3d'); px(23, 20, 4, 4, '#2b2b3d'); px(29, 20, 4, 4, '#2b2b3d');
-  px(15, 12, 18, 4, '#d8dcf0');
-  px(9, 4, 30, 2, '#5a5a72'); px(9, 42, 30, 2, '#5a5a72');
+ENEMY_SPRITES.esActor = paint(48, 48, (px) => {
+  px(14, 4, 20, 6, '#c9a04a');                                // ponto de interrogacao
+  px(10, 8, 6, 8, '#c9a04a'); px(32, 8, 6, 10, '#c9a04a');
+  px(26, 16, 8, 8, '#c9a04a');
+  px(20, 22, 8, 8, '#c9a04a');
+  px(20, 30, 8, 5, '#c9a04a');
+  px(20, 38, 8, 7, '#c9a04a');
+  px(14, 4, 20, 2, '#f0c96a'); px(20, 38, 8, 2, '#f0c96a');
+  px(21, 24, 3, 4, '#f6f2e2'); px(25, 24, 3, 4, '#f6f2e2');   // olhinhos
+  px(22, 25, 1, 2, '#241a2b'); px(26, 25, 1, 2, '#241a2b');
+  px(18, 34, 4, 3, '#b8465a'); px(26, 34, 4, 3, '#b8465a');   // laco
+  px(22, 34, 4, 3, '#8f3448');
 });
 
 ENEMY_SPRITES.drama = paint(48, 48, (px) => {
