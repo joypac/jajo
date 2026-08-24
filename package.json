@@ -1,0 +1,15 @@
+{
+  "name": "onde-esta-o-jajo",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Um pequeno RPG pixel art absurdo. O objetivo e encontrar o Jajo.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.4.0"
+  }
+}

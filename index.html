@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<meta name="theme-color" content="#0f0f1b" />
+<meta name="description" content="Um pequeno RPG absurdo. O objetivo é encontrar o Jajo." />
+<title>ONDE ESTÁ O JAJO?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>%F0%9F%94%8D</text></svg>">
+<link rel="stylesheet" href="./src/style.css" />
+</head>
+<body>
+<div id="app">
+  <div id="stage">
+    <canvas id="game"></canvas>
+
+    <!-- ================= UI OVERLAY ================= -->
+    <div id="ui">
+
+      <!-- HUD -->
+      <div id="hud" class="hidden">
+        <div class="hud-name">BERNARDO</div>
+        <div class="hud-row"><span class="hud-label">HP</span>
+          <span class="bar"><i id="hud-hp-bar"></i></span>
+          <span id="hud-hp-txt">100/100</span>
+        </div>
+        <div class="hud-row"><span class="hud-label">DR</span>
+          <span class="bar drama"><i id="hud-dr-bar"></i></span>
+          <span id="hud-dr-txt">37</span>
+        </div>
+      </div>
+
+      <!-- Area name toast -->
+      <div id="area-toast" class="hidden"></div>
+
+      <!-- Item pickup toast -->
+      <div id="item-toast" class="hidden"></div>
+
+      <!-- Dialog box -->
+      <div id="dialog" class="hidden">
+        <div id="dialog-speaker" class="hidden"></div>
+        <div id="dialog-box" class="panel">
+          <p id="dialog-text"></p>
+          <span id="dialog-next">&#9660;</span>
+        </div>
+      </div>
+
+      <!-- Inventory / menu -->
+      <div id="menu" class="hidden">
+        <div class="panel menu-panel">
+          <header>MOCHILA</header>
+          <ul id="menu-list"></ul>
+          <div id="menu-desc" class="menu-desc"></div>
+          <footer id="menu-foot">FECHAR</footer>
+        </div>
+      </div>
+
+      <!-- Battle UI -->
+      <div id="battle" class="hidden">
+        <div id="bt-enemy" class="bt-plate">
+          <div class="bt-name"><span id="bt-enemy-name">?</span></div>
+          <span class="bar enemy"><i id="bt-enemy-bar"></i></span>
+        </div>
+        <div id="bt-hero" class="bt-plate">
+          <div class="bt-name">BERNARDO <small>Lv.1</small></div>
+          <span class="bar"><i id="bt-hero-bar"></i></span>
+          <div class="bt-sub">HP <span id="bt-hero-hp">100/100</span> &nbsp; DRAMA <span id="bt-hero-dr">37</span></div>
+        </div>
+        <div id="bt-bottom">
+          <div id="bt-log" class="panel hidden"><p id="bt-log-text"></p><span id="bt-log-next">&#9660;</span></div>
+          <div id="bt-cmd" class="panel hidden">
+            <div id="bt-cmd-title" class="hidden"></div>
+            <div id="bt-cmd-grid"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Title screen -->
+      <div id="title" class="hidden">
+        <div class="title-inner">
+          <div class="title-lines">
+            <span class="t1">ONDE ESTÁ</span>
+            <span class="t2">O JAJO?</span>
+          </div>
+          <p class="title-sub">Uma aventura completamente desnecessária.</p>
+          <button id="btn-start" class="pixbtn">ENCONTRAR O JAJO</button>
+          <p class="title-hint">setas / wasd &middot; espaço para falar</p>
+        </div>
+      </div>
+
+      <!-- Card do heroi -->
+      <div id="herocard" class="hidden">
+        <div class="panel card-panel">
+          <header>BERNARDO <span>LV. 1</span></header>
+          <div class="card-body">
+            <canvas id="card-sprite" width="16" height="16"></canvas>
+            <ul>
+              <li><span>HP</span><b>100</b></li>
+              <li><span>DRAMA</span><b>37</b></li>
+              <li><span>PACiÊNCIA</span><b>12</b></li>
+            </ul>
+          </div>
+          <footer class="card-foot">continuar</footer>
+        </div>
+      </div>
+
+      <!-- Ecra final -->
+      <div id="ending" class="hidden">
+        <div class="end-inner">
+          <h1 id="end-title">ENCONTRASTE O JAJO <span class="heart">&#10084;</span></h1>
+          <p id="end-l1">Parabéns, Bernardo.</p>
+          <p id="end-l2">Demoraste 0m 00s.</p>
+          <p id="end-l3">Era literalmente isto.</p>
+          <button id="btn-again" class="pixbtn">JOGAR NOVAMENTE</button>
+        </div>
+      </div>
+
+    </div><!-- /#ui -->
+
+  <!-- Controlos tacteis -->
+  <div id="touch" class="hidden">
+    <div id="dpad">
+      <button class="dp up"    data-dir="up"    aria-label="cima"></button>
+      <button class="dp down"  data-dir="down"  aria-label="baixo"></button>
+      <button class="dp left"  data-dir="left"  aria-label="esquerda"></button>
+      <button class="dp right" data-dir="right" aria-label="direita"></button>
+      <span class="dp-center"></span>
+    </div>
+    <div id="abtns">
+      <button id="btn-menu" class="rbtn small">MENU</button>
+      <button id="btn-a" class="rbtn">A</button>
+    </div>
+  </div>
+
+  <button id="btn-sound" title="som">&#9835;</button>
+  </div>
+</div>
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>
