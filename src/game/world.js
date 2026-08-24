@@ -545,4 +545,5 @@ register('world', {
   }
 });
 
-export { player };
+export { player, solidAt };
+export function debugNpcs() { return npcs; }

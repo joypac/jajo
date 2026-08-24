@@ -10,7 +10,7 @@ export const DADOS = [
   { key: 'destino',   label: 'Destino',        value: 'Alentejo' },
   { key: 'profissao', label: 'Profissão',      value: '???', always: true },
   { key: 'teatro',    label: 'Estudou teatro', value: 'SIM' },
-  { key: 'actor',     label: 'É actor',        value: 'NÃO', warn: true },
+  { key: 'actor',     label: 'Actor',          value: 'NÃO', warn: true },
   { key: 'cafe',      label: 'Café',           value: 'SIM' },
   { key: 'sono',      label: 'Sono',           value: 'NÃO' },
   { key: 'fofo',      label: 'Fofo',           value: 'SIM', heart: true }

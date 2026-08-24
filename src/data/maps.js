@@ -279,7 +279,7 @@ export const MAPS = {
     ],
     spawn: { x: 9, y: 14, dir: 'up' },
     objects: [
-      { key: 'casaFim', x: 8, y: 3, w: 3, h: 3, sprite: 'casa', talk: 'alentejo_casa', enter: true },
+      { key: 'casaFim', x: 8, y: 3, w: 3, h: 3, sprite: 'casaAlentejo', talk: 'alentejo_casa', enter: true },
       { key: 'placaAlentejo', x: 12, y: 12, w: 3, h: 2, sprite: 'placaAlentejo', talk: 'alentejo_placa' },
       { key: 'oli1', x: 4, y: 7, w: 2, h: 2, sprite: 'oliveira' },
       { key: 'oli2', x: 15, y: 6, w: 2, h: 2, sprite: 'oliveira' },

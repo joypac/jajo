@@ -39,8 +39,12 @@ function boot() {
 
   // atalho para testar cenas: abrir com  index.html#debug
   if (location.hash.indexOf('debug') >= 0) {
-    import('./game/state.js').then(m => {
-      window.__jajo = { go, state: m.state, flags: m.state.flags, reset: m.resetState, addItem: m.addItem };
+    Promise.all([import('./game/state.js'), import('./game/world.js')]).then(([st, w]) => {
+      window.__jajo = {
+        go, state: st.state, reset: st.resetState,
+        addItem: st.addItem, loadMap: w.loadMap, player: w.player, solid: w.solidAt, npcs: w.debugNpcs,
+        get flags() { return st.state.flags; }
+      };
     });
   }
 
