@@ -50,9 +50,20 @@ function render() {
 
   listEl.innerHTML = '';
   if (tab === 0) {
+    const stats = document.createElement('li');
+    stats.className = 'stats-row';
+    stats.innerHTML =
+      '<span>HP <b>' + state.hp + '/' + state.maxHp + '</b></span>' +
+      '<span>DRAMA <b>' + state.drama + '</b></span>' +
+      '<span>ENERGIA <b>' + state.energia + '</b></span>' +
+      '<span>SONO <b>' + state.sono + '</b></span>';
+    listEl.appendChild(stats);
     const inv = sortedItems();
     if (!inv.length) {
-      listEl.innerHTML = '<li class="empty">A mochila está vazia. Como o frigorífico.</li>';
+      const li = document.createElement('li');
+      li.className = 'empty';
+      li.textContent = 'A mochila está vazia. Como o frigorífico.';
+      listEl.appendChild(li);
       descEl.textContent = '';
     } else {
       inv.forEach((entry, i) => {

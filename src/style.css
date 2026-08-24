@@ -321,3 +321,13 @@ body.touch:not(.portrait) #bt-bottom{ bottom:calc(var(--t)*30px); }
 body.touch:not(.portrait) #dpad{ transform:scale(.78); transform-origin:left bottom; opacity:.85; }
 body.touch:not(.portrait) #abtns{ transform:scale(.82); transform-origin:right bottom; opacity:.9; }
 body.touch:not(.portrait) #area-toast{ bottom:calc(var(--s)*4px); }
+
+/* ---------------- estado na mochila ---------------- */
+#menu-list li.stats-row{
+  display:flex; flex-wrap:wrap; gap:calc(var(--s)*4px); cursor:default;
+  font-size:calc(var(--s)*3.5px); color:var(--ink-dim);
+  border-bottom:calc(var(--s)*1px) solid var(--panel-2);
+  padding-bottom:calc(var(--s)*3px); margin-bottom:calc(var(--s)*2px);
+}
+#menu-list li.stats-row b{ color:var(--ink); }
+#menu-list li.stats-row::before{ content:none; }

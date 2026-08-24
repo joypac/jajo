@@ -3,6 +3,7 @@
    ============================================================ */
 import { ctx, view, clear, text } from '../engine/screen.js';
 import { ENEMIES, ATTACKS, DRAMA_COST, DRAMA_DAMAGE, DRAMA_LINES, WIN_LINES } from '../data/enemies.js';
+import { FLAVOUR } from '../data/script.js';
 import { ENEMY_SPRITES, CHARS } from '../data/sprites.js';
 import { ITEMS, ITEM_ORDER } from '../data/items.js';
 import { draw as blit, tinted } from '../engine/sprites.js';
@@ -246,6 +247,7 @@ function win() {
   msgs = [];
   say(enemy.death);
   say(pick(WIN_LINES));
+  if (Math.random() < 0.4) say(pick(FLAVOUR));
   runMsgs(() => leave(enemy.boss));
 }
 
