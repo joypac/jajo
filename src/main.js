@@ -16,8 +16,11 @@ import './game/title.js';
 import './game/ending.js';
 
 function boot() {
-  if (isTouch()) document.body.classList.add('touch');
-  document.getElementById('touch').classList.remove('hidden');
+  // controlos tácteis só onde fazem sentido (ecrã táctil ou janela estreita)
+  if (isTouch() || window.innerWidth < 760) {
+    document.body.classList.add('touch');
+    document.getElementById('touch').classList.remove('hidden');
+  }
   resize();
   initInput();
 

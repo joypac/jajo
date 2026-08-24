@@ -25,6 +25,7 @@ body{
   -webkit-font-smoothing:none;
   -webkit-tap-highlight-color:transparent;
   user-select:none; -webkit-user-select:none;
+  font-variant-ligatures:none; font-kerning:none;
   touch-action:none;
   color:var(--ink);
 }
@@ -154,7 +155,7 @@ body.touch.portrait #stage{ align-items:flex-start; padding-top:env(safe-area-in
   padding:calc(var(--s)*2.5px) calc(var(--s)*4px);
 }
 #bt-enemy{ left:calc(var(--s)*6px); top:calc(var(--s)*6px); }
-#bt-hero{ right:calc(var(--s)*6px); top:calc(var(--s)*44px); }
+#bt-hero{ right:calc(var(--s)*6px); bottom:calc(var(--s)*48px); }
 .bt-name{ font-size:calc(var(--s)*4.5px); margin-bottom:calc(var(--s)*2px); }
 .bt-name small{ font-size:calc(var(--s)*3.5px); color:var(--ink-dim); }
 .bt-sub{ font-size:calc(var(--s)*3.5px); color:var(--ink-dim); margin-top:calc(var(--s)*2px); }
@@ -313,3 +314,10 @@ body.touch #touch{ display:block !important; }
 #end-dados .row b{ color:var(--ink); }
 #end-dados .row b.warn{ color:#ff8a7a; }
 #end-dados .row b.heart{ color:#ff5d7a; }
+
+/* ---------------- telemóvel deitado: caixas por cima dos botões ---------------- */
+body.touch:not(.portrait) #dialog{ bottom:calc(var(--t)*30px); }
+body.touch:not(.portrait) #bt-bottom{ bottom:calc(var(--t)*30px); }
+body.touch:not(.portrait) #dpad{ transform:scale(.78); transform-origin:left bottom; opacity:.85; }
+body.touch:not(.portrait) #abtns{ transform:scale(.82); transform-origin:right bottom; opacity:.9; }
+body.touch:not(.portrait) #area-toast{ bottom:calc(var(--s)*4px); }

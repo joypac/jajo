@@ -36,6 +36,9 @@ let prevU = false, prevD = false, prevL = false, prevR = false;
 let dmgPops = [];
 let logTyping = 0, logFull = '';
 
+/* posições dos combatentes (fração da área de jogo) */
+const EX = 0.62, EY = 0.26, HX = 0.27, HY = 0.46;
+
 const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
 const pick = a => a[(Math.random() * a.length) | 0];
 
@@ -147,7 +150,7 @@ function hitHero(dmg) {
   heroFlash = 0.28;
   fx.shake(2.5, 0.2);
   sfx('hurt');
-  dmgPops.push({ v: dmg, x: 0.26, y: 0.52, t: 0.9, color: '#ff8a7a' });
+  dmgPops.push({ v: dmg, x: HX, y: HY, t: 0.9, color: '#ff8a7a' });
   refreshHud();
 }
 
@@ -239,7 +242,7 @@ function win() {
   enemyDead = true;
   state.battlesWon++;
   sfx('win');
-  fx.burst(view.w * 0.62, view.h * 0.32, { count: 22, speed: 44, life: 1, color: '#ffd447', grav: 26 });
+  fx.burst(view.w * EX, view.h * EY, { count: 22, speed: 44, life: 1, color: '#ffd447', grav: 26 });
   msgs = [];
   say(enemy.death);
   say(pick(WIN_LINES));
@@ -277,14 +280,18 @@ function drawBattlefield() {
   ctx.fillRect(0, 0, w, h);
 
   // chão
-  ctx.fillStyle = 'rgba(90,80,140,0.28)';
-  for (let i = 0; i < 5; i++) {
-    ctx.fillRect(0, h * 0.62 + i * 6, w, 2);
-  }
-  ctx.globalAlpha = 0.25;
+  const horizon = Math.round(h * 0.40);
+  ctx.fillStyle = enemy.boss ? '#241a44' : '#3a2f68';
+  ctx.fillRect(0, horizon, w, h - horizon);
+  ctx.fillStyle = 'rgba(255,255,255,0.06)';
+  for (let i = 0; i < 6; i++) ctx.fillRect(0, horizon + i * i * 2, w, 1);
+  ctx.globalAlpha = 0.3;
   ctx.fillStyle = enemy.color;
   ctx.beginPath();
-  ctx.ellipse(w * 0.62, h * 0.30 + 30, 34, 8, 0, 0, Math.PI * 2);
+  ctx.ellipse(w * EX, h * EY + 26, 30, 7, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(w * HX, h * HY + 15, 18, 6, 0, 0, Math.PI * 2);
   ctx.fill();
   ctx.globalAlpha = 1;
 
@@ -293,8 +300,8 @@ function drawBattlefield() {
   if (spr) {
     const bob = Math.sin(t * 3) * 2;
     const jitter = enemyShake > 0 ? (Math.random() - 0.5) * 4 : 0;
-    const ex = (w * 0.62 - spr.width / 2 + jitter) | 0;
-    const ey = (h * 0.30 - spr.height / 2 + bob) | 0;
+    const ex = (w * EX - spr.width / 2 + jitter) | 0;
+    const ey = (h * EY - spr.height / 2 + bob) | 0;
     if (enemyFlash > 0 && Math.floor(enemyFlash * 20) % 2 === 0) {
       blit(ctx, tinted(spr, '#ffffff'), ex, ey);
     } else {
@@ -305,18 +312,15 @@ function drawBattlefield() {
   // Bernardo de costas
   const set = CHARS.bernardo.up;
   const idx = 0;
-  const hx = (w * 0.26 - 8) | 0, hy = (h * 0.52 - 8) | 0;
-  ctx.globalAlpha = 0.22; ctx.fillStyle = '#000';
-  ctx.fillRect(hx + 3, hy + 13, 10, 3); ctx.globalAlpha = 1;
-  if (heroFlash > 0 && Math.floor(heroFlash * 20) % 2 === 0) {
-    blit(ctx, tinted(set[idx], '#ff8a7a'), hx, hy);
-  } else {
-    blit(ctx, set[idx], hx, hy);
-  }
+  // o Bernardo aparece maior no combate (fica melhor a ler)
+  const hx = (w * HX - 16) | 0, hy = (h * HY - 16) | 0;
+  const heroSpr = (heroFlash > 0 && Math.floor(heroFlash * 20) % 2 === 0) ? tinted(set[idx], '#ff8a7a') : set[idx];
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(heroSpr, hx, hy, 32, 32);
 
   // números de dano
   for (const p of dmgPops) {
-    const y = h * p.y - (0.9 - p.t) * 22;
+    const y = h * p.y - (0.9 - p.t) * 22 - 10;
     text('-' + p.v, w * p.x, y, { size: 8, color: p.color, align: 'center' });
   }
 
