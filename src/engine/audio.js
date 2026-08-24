@@ -1,19 +1,17 @@
 /* ============================================================
-   audio.js - chiptune e efeitos gerados na hora (WebAudio)
-   Nada de ficheiros: tudo sao osciladores.
+   audio.js - música chiptune e efeitos gerados na hora.
+   Sem ficheiros: tudo osciladores.
    ============================================================ */
 
 let actx = null, master = null, musicGain = null, sfxGain = null;
-let muted = false;
-let noiseBuf = null;
+let muted = false, noiseBuf = null;
 
-const PC = { C: 0, 'C#': 1, D: 2, 'D#': 3, E: 4, F: 5, 'F#': 6, G: 7, 'G#': 8, A: 9, 'A#': 10, B: 11 };
+const PC = { C:0,'C#':1,D:2,'D#':3,E:4,F:5,'F#':6,G:7,'G#':8,A:9,'A#':10,B:11 };
 function freq(name) {
   if (!name) return 0;
   const m = /^([A-G]#?)(-?\d)$/.exec(name);
   if (!m) return 0;
-  const midi = PC[m[1]] + (parseInt(m[2], 10) + 1) * 12;
-  return 440 * Math.pow(2, (midi - 69) / 12);
+  return 440 * Math.pow(2, (PC[m[1]] + (parseInt(m[2], 10) + 1) * 12 - 69) / 12);
 }
 
 export function initAudio() {
@@ -21,11 +19,10 @@ export function initAudio() {
   const AC = window.AudioContext || window.webkitAudioContext;
   if (!AC) return;
   actx = new AC();
-  master = actx.createGain(); master.gain.value = muted ? 0 : 0.34; master.connect(actx.destination);
-  musicGain = actx.createGain(); musicGain.gain.value = 0.55; musicGain.connect(master);
-  sfxGain = actx.createGain(); sfxGain.gain.value = 1.0; sfxGain.connect(master);
-
-  noiseBuf = actx.createBuffer(1, actx.sampleRate * 0.4, actx.sampleRate);
+  master = actx.createGain(); master.gain.value = muted ? 0 : 0.32; master.connect(actx.destination);
+  musicGain = actx.createGain(); musicGain.gain.value = 0.5; musicGain.connect(master);
+  sfxGain = actx.createGain(); sfxGain.gain.value = 1; sfxGain.connect(master);
+  noiseBuf = actx.createBuffer(1, actx.sampleRate * 0.5, actx.sampleRate);
   const d = noiseBuf.getChannelData(0);
   for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
 }
@@ -33,15 +30,14 @@ export function initAudio() {
 export function isMuted() { return muted; }
 export function toggleMute() {
   muted = !muted;
-  if (master) master.gain.setTargetAtTime(muted ? 0 : 0.34, actx.currentTime, 0.02);
+  if (master) master.gain.setTargetAtTime(muted ? 0 : 0.32, actx.currentTime, 0.02);
   return muted;
 }
+export function musicVolume(v) { if (musicGain && actx) musicGain.gain.setTargetAtTime(v, actx.currentTime, 0.3); }
 
-/* ---------------- blocos base ---------------- */
 function tone(dest, f, t, dur, type, vol, slideTo) {
   if (!actx || !f) return;
-  const o = actx.createOscillator();
-  const g = actx.createGain();
+  const o = actx.createOscillator(), g = actx.createGain();
   o.type = type || 'square';
   o.frequency.setValueAtTime(f, t);
   if (slideTo) o.frequency.exponentialRampToValueAtTime(Math.max(20, slideTo), t + dur);
@@ -51,7 +47,6 @@ function tone(dest, f, t, dur, type, vol, slideTo) {
   o.connect(g); g.connect(dest);
   o.start(t); o.stop(t + dur + 0.02);
 }
-
 function noise(dest, t, dur, vol, hp) {
   if (!actx || !noiseBuf) return;
   const s = actx.createBufferSource(); s.buffer = noiseBuf;
@@ -64,138 +59,106 @@ function noise(dest, t, dur, vol, hp) {
   s.start(t); s.stop(t + dur + 0.02);
 }
 
-/* ---------------- efeitos ---------------- */
 const SFX = {
-  blip:    t => tone(sfxGain, 760, t, 0.035, 'square', 0.10),
-  blip2:   t => tone(sfxGain, 620, t, 0.035, 'square', 0.10),
-  confirm: t => { tone(sfxGain, 620, t, 0.06, 'square', 0.18); tone(sfxGain, 930, t + 0.06, 0.10, 'square', 0.18); },
-  cancel:  t => { tone(sfxGain, 420, t, 0.07, 'square', 0.16); tone(sfxGain, 260, t + 0.06, 0.10, 'square', 0.16); },
-  step:    t => noise(sfxGain, t, 0.04, 0.05, 900),
-  hit:     t => { noise(sfxGain, t, 0.14, 0.30, 500); tone(sfxGain, 220, t, 0.16, 'square', 0.20, 60); },
-  hurt:    t => { tone(sfxGain, 180, t, 0.22, 'sawtooth', 0.20, 70); noise(sfxGain, t, 0.10, 0.16, 300); },
-  drama:   t => { [0, .08, .16, .24].forEach((d, i) => tone(sfxGain, 330 * Math.pow(1.26, i), t + d, 0.18, 'sawtooth', 0.16)); noise(sfxGain, t + 0.3, 0.4, 0.22, 200); },
-  item:    t => [523, 659, 784, 1046].forEach((f, i) => tone(sfxGain, f, t + i * 0.06, 0.12, 'square', 0.17)),
-  heal:    t => [523, 784, 1046].forEach((f, i) => tone(sfxGain, f, t + i * 0.07, 0.16, 'triangle', 0.20)),
-  chicken: t => { tone(sfxGain, 900, t, 0.08, 'square', 0.18, 500); tone(sfxGain, 780, t + 0.11, 0.10, 'square', 0.18, 420); },
-  open:    t => { tone(sfxGain, 300, t, 0.05, 'square', 0.14); tone(sfxGain, 500, t + 0.05, 0.08, 'square', 0.14); },
-  win:     t => [523, 659, 784, 1046, 1318].forEach((f, i) => tone(sfxGain, f, t + i * 0.09, 0.22, 'square', 0.20)),
-  flee:    t => tone(sfxGain, 700, t, 0.3, 'square', 0.16, 180),
-  sting:   t => {
-    [110, 220, 233, 466].forEach(f => tone(sfxGain, f, t, 1.1, 'sawtooth', 0.16));
-    noise(sfxGain, t, 0.7, 0.30, 120);
-    tone(sfxGain, 1400, t, 0.5, 'square', 0.12, 300);
-  },
-  boss:    t => { [55, 110, 116.5].forEach(f => tone(sfxGain, f, t, 1.6, 'sawtooth', 0.18)); noise(sfxGain, t, 1.2, 0.16, 80); }
+  porta:    t => { tone(sfxGain, 1318, t, 0.10, 'triangle', 0.20); tone(sfxGain, 1760, t + 0.09, 0.16, 'triangle', 0.18); },
+  meia:     t => { tone(sfxGain, 520, t, 0.07, 'triangle', 0.16, 300); noise(sfxGain, t, 0.05, 0.05, 2000); },
+  arrumar:  t => { noise(sfxGain, t, 0.07, 0.10, 1800); tone(sfxGain, 700, t, 0.05, 'square', 0.07); },
+  caixote:  t => { tone(sfxGain, 120, t, 0.16, 'square', 0.22, 60); noise(sfxGain, t, 0.10, 0.16, 300); },
+  registo:  t => { tone(sfxGain, 1046, t, 0.08, 'square', 0.18); tone(sfxGain, 1568, t + 0.07, 0.20, 'square', 0.18); noise(sfxGain, t + 0.02, 0.10, 0.10, 4000); },
+  esfregona:t => noise(sfxGain, t, 0.18, 0.10, 900),
+  pergunta: t => { tone(sfxGain, 880, t, 0.07, 'square', 0.16); tone(sfxGain, 1174, t + 0.07, 0.10, 'square', 0.16); },
+  compra:   t => [784, 988, 1318, 1568].forEach((f, i) => tone(sfxGain, f, t + i * 0.07, 0.18, 'square', 0.20)),
+  recusa:   t => { tone(sfxGain, 520, t, 0.12, 'square', 0.16); tone(sfxGain, 392, t + 0.11, 0.18, 'square', 0.16); },
+  energia:  t => [523, 659, 880].forEach((f, i) => tone(sfxGain, f, t + i * 0.07, 0.16, 'triangle', 0.20)),
+  aviso:    t => { tone(sfxGain, 660, t, 0.10, 'square', 0.16); tone(sfxGain, 660, t + 0.16, 0.12, 'square', 0.16); },
+  erro:     t => { tone(sfxGain, 200, t, 0.20, 'sawtooth', 0.18, 90); },
+  pegadas:  t => { noise(sfxGain, t, 0.06, 0.10, 600); noise(sfxGain, t + 0.09, 0.06, 0.08, 600); },
+  clique:   t => tone(sfxGain, 760, t, 0.03, 'square', 0.10),
+  sonia:    t => { tone(sfxGain, 440, t, 0.10, 'triangle', 0.14); tone(sfxGain, 415, t + 0.10, 0.16, 'triangle', 0.14); },
+  fim:      t => [1046, 784, 659, 523].forEach((f, i) => tone(sfxGain, f, t + i * 0.13, 0.3, 'triangle', 0.18)),
+  vitoria:  t => [523, 659, 784, 1046, 1318, 1568].forEach((f, i) => tone(sfxGain, f, t + i * 0.09, 0.25, 'square', 0.20))
 };
-
 export function sfx(name) {
   if (!actx || muted) return;
   const f = SFX[name];
   if (f) f(actx.currentTime + 0.001);
 }
 
-/* ---------------- musica ---------------- */
-/* cada faixa: [nota|null, duracao em semicolcheias] */
+/* ---------------- música ---------------- */
 const THEMES = {
-  aldeia: {
-    bpm: 132, wave: 'square', bassWave: 'triangle', vol: 0.13,
-    melody: [['G4',2],['C5',2],['E5',2],['G5',2],['E5',2],['C5',2],['D5',4],
-             ['F4',2],['A4',2],['C5',2],['F5',2],['E5',4],['D5',4],
-             ['E5',2],['G5',2],['A5',2],['G5',2],['E5',2],['C5',2],['G4',4],
-             ['A4',2],['C5',2],['E5',2],['D5',2],['C5',4],[null,4]],
-    bass:   [['C3',4],['C3',4],['G2',4],['G2',4],['F2',4],['F2',4],['C3',4],['C3',4],
-             ['C3',4],['E3',4],['F3',4],['G3',4],['A2',4],['F2',4],['G2',4],['G2',4]],
-    drums: '----h-------h---'
-  },
-  floresta: {
-    bpm: 96, wave: 'triangle', bassWave: 'triangle', vol: 0.15,
-    melody: [['A4',4],['C5',2],['B4',2],['A4',4],['E4',4],
-             ['F4',4],['E4',4],['D4',4],[null,4],
-             ['A4',4],['E5',2],['D5',2],['C5',4],['B4',4],
-             ['A4',8],[null,8]],
-    bass:   [['A2',8],['A2',8],['F2',8],['G2',8],['A2',8],['E2',8],['F2',8],['G2',8]],
-    drums: '----------------'
-  },
-  fatima: {
-    bpm: 76, wave: 'triangle', bassWave: 'triangle', vol: 0.15,
-    melody: [['C5',8],['G4',8],['A4',8],['G4',8],['F4',8],['E4',8],['G4',8],[null,8]],
-    bass:   [['C3',16],['A2',16],['F2',16],['G2',16]],
-    drums: '----------------'
-  },
-  caldas: {
-    bpm: 118, wave: 'square', bassWave: 'triangle', vol: 0.12,
-    melody: [['D5',2],['F5',2],['E5',2],['C5',2],['D5',4],[null,4],
-             ['G4',2],['B4',2],['A4',2],['F4',2],['G4',4],[null,4],
-             ['D5',2],['E5',2],['F5',2],['G5',2],['A5',4],['F5',4],
-             ['E5',2],['D5',2],['C5',2],['B4',2],['A4',8]],
-    bass:   [['D3',4],['A2',4],['D3',4],['A2',4],['G2',4],['D3',4],['G2',4],['D3',4],
-             ['D3',4],['F3',4],['A2',4],['C3',4],['G2',4],['A2',4],['D3',8]],
+  titulo: {
+    bpm: 124, wave: 'square', bassWave: 'triangle', vol: 0.12,
+    melody: [['E5',2],['G5',2],['A5',4],['G5',2],['E5',2],['D5',4],
+             ['C5',2],['E5',2],['G5',4],['E5',2],['D5',2],['C5',4],
+             ['D5',2],['F5',2],['A5',4],['G5',4],['E5',4],
+             ['C5',2],['D5',2],['E5',4],['G5',4],[null,4]],
+    bass: [['C3',4],['G2',4],['A2',4],['F2',4],['C3',4],['G2',4],['C3',4],['G2',4],
+           ['F2',4],['C3',4],['G2',4],['A2',4],['F2',4],['G2',4],['C3',4],['C3',4]],
     drums: '--h---h---h---h-'
   },
-  combate: {
-    bpm: 168, wave: 'square', bassWave: 'square', vol: 0.12,
-    melody: [['E5',2],['E5',2],['G5',2],['E5',2],['D5',2],['C5',2],['B4',4],
-             ['C5',2],['C5',2],['E5',2],['C5',2],['B4',2],['A4',2],['G4',4],
-             ['A4',2],['B4',2],['C5',2],['D5',2],['E5',4],['G5',4],
-             ['E5',2],['D5',2],['C5',2],['B4',2],['A4',8]],
-    bass:   [['A2',2],['A2',2],['A2',2],['A2',2],['E2',2],['E2',2],['E2',2],['E2',2],
-             ['F2',2],['F2',2],['F2',2],['F2',2],['G2',2],['G2',2],['G2',2],['G2',2],
-             ['A2',2],['A2',2],['A2',2],['A2',2],['C3',2],['C3',2],['C3',2],['C3',2],
-             ['F2',2],['F2',2],['F2',2],['F2',2],['E2',2],['E2',2],['E2',2],['E2',2]],
+  loja: {
+    bpm: 138, wave: 'square', bassWave: 'triangle', vol: 0.10,
+    melody: [['C5',2],['E5',2],['G5',2],['E5',2],['F5',2],['E5',2],['D5',4],
+             ['D5',2],['F5',2],['A5',2],['F5',2],['G5',2],['F5',2],['E5',4],
+             ['E5',2],['G5',2],['C6',2],['G5',2],['A5',4],['G5',4],
+             ['F5',2],['E5',2],['D5',2],['C5',2],['G4',4],['C5',4]],
+    bass: [['C3',2],['C3',2],['G2',2],['G2',2],['A2',2],['A2',2],['F2',2],['F2',2],
+           ['C3',2],['C3',2],['G2',2],['G2',2],['F2',2],['F2',2],['G2',2],['G2',2],
+           ['A2',2],['A2',2],['E3',2],['E3',2],['F2',2],['F2',2],['C3',2],['C3',2],
+           ['F2',2],['F2',2],['G2',2],['G2',2],['C3',2],['C3',2],['C3',2],['C3',2]],
     drums: 'k-h-s-h-k-h-s-h-'
   },
-  boss: {
-    bpm: 84, wave: 'sawtooth', bassWave: 'square', vol: 0.11,
-    melody: [['A4',4],['A4',2],['A#4',2],['A4',4],['E4',4],
-             ['F4',4],['E4',2],['F4',2],['G4',4],['E4',4],
-             ['A4',4],['C5',4],['B4',4],['A4',4],
-             ['G#4',8],['A4',8]],
-    bass:   [['A2',8],['A2',8],['F2',8],['E2',8],['A2',8],['F2',8],['G2',8],['E2',8]],
-    drums: 'k---k---k---k-s-'
+  corrida: {
+    bpm: 168, wave: 'square', bassWave: 'square', vol: 0.10,
+    melody: [['A4',2],['C5',2],['E5',2],['C5',2],['D5',2],['F5',2],['E5',4],
+             ['A4',2],['C5',2],['E5',2],['G5',2],['F5',2],['E5',2],['D5',4],
+             ['G4',2],['B4',2],['D5',2],['B4',2],['C5',2],['E5',2],['D5',4],
+             ['F5',2],['E5',2],['D5',2],['C5',2],['B4',4],['A4',4]],
+    bass: [['A2',2],['A2',2],['A2',2],['A2',2],['F2',2],['F2',2],['F2',2],['F2',2],
+           ['A2',2],['A2',2],['A2',2],['A2',2],['G2',2],['G2',2],['G2',2],['G2',2],
+           ['G2',2],['G2',2],['G2',2],['G2',2],['C3',2],['C3',2],['C3',2],['C3',2],
+           ['F2',2],['F2',2],['E2',2],['E2',2],['A2',2],['A2',2],['A2',2],['A2',2]],
+    drums: 'k-hks-hkk-hks-hk'
   },
-  fim: {
-    bpm: 70, wave: 'triangle', bassWave: 'triangle', vol: 0.16,
-    melody: [['C5',8],['E5',8],['G5',8],['E5',8],['F5',8],['E5',8],['D5',8],['C5',8]],
-    bass:   [['C3',16],['G2',16],['F2',16],['G2',16]],
+  venezia: {
+    bpm: 92, wave: 'triangle', bassWave: 'triangle', vol: 0.13,
+    melody: [['G4',4],['B4',4],['D5',4],['B4',4],['C5',4],['E5',4],['D5',8],
+             ['A4',4],['C5',4],['E5',4],['C5',4],['D5',8],['G4',8]],
+    bass: [['G2',8],['E2',8],['C3',8],['D3',8],['A2',8],['F2',8],['G2',8],['G2',8]],
+    drums: '----h-------h---'
+  },
+  resumo: {
+    bpm: 96, wave: 'triangle', bassWave: 'triangle', vol: 0.14,
+    melody: [['C5',4],['E5',4],['G5',8],['F5',4],['E5',4],['D5',8],
+             ['E5',4],['G5',4],['C6',8],['G5',4],['E5',4],['C5',8]],
+    bass: [['C3',8],['G2',8],['F2',8],['G2',8],['C3',8],['E3',8],['F2',8],['G2',8]],
     drums: '----------------'
   }
 };
 
 function expand(seq) {
-  const map = new Map();
-  let pos = 0;
-  for (const [note, len] of seq) {
-    if (note) map.set(pos, { f: freq(note), steps: len });
-    pos += len;
-  }
+  const map = new Map(); let pos = 0;
+  for (const [n, len] of seq) { if (n) map.set(pos, { f: freq(n), steps: len }); pos += len; }
   return { map, length: pos };
 }
-
 const COMPILED = {};
-for (const k in THEMES) {
-  const t = THEMES[k];
-  COMPILED[k] = { def: t, mel: expand(t.melody), bass: expand(t.bass) };
-}
+for (const k in THEMES) COMPILED[k] = { def: THEMES[k], mel: expand(THEMES[k].melody), bass: expand(THEMES[k].bass) };
 
 let current = null, curName = '', step = 0, nextTime = 0, timer = null;
 
-function stepDur() { return 60 / current.def.bpm / 4; }
-
 function scheduler() {
   if (!current || !actx) return;
-  const ahead = actx.currentTime + 0.25;
-  while (nextTime < ahead) {
-    const d = stepDur();
-    const mel = current.mel.map.get(step % current.mel.length);
-    if (mel) tone(musicGain, mel.f, nextTime, mel.steps * d * 0.9, current.def.wave, current.def.vol);
-    const bs = current.bass.map.get(step % current.bass.length);
-    if (bs) tone(musicGain, bs.f, nextTime, bs.steps * d * 0.9, current.def.bassWave, current.def.vol * 0.85);
+  const d = 60 / current.def.bpm / 4;
+  while (nextTime < actx.currentTime + 0.25) {
+    const m = current.mel.map.get(step % current.mel.length);
+    if (m) tone(musicGain, m.f, nextTime, m.steps * d * 0.9, current.def.wave, current.def.vol);
+    const b = current.bass.map.get(step % current.bass.length);
+    if (b) tone(musicGain, b.f, nextTime, b.steps * d * 0.9, current.def.bassWave, current.def.vol * 0.8);
     const dr = current.def.drums[step % current.def.drums.length];
-    if (dr === 'k') tone(musicGain, 110, nextTime, 0.12, 'sine', 0.30, 40);
-    else if (dr === 'h') noise(musicGain, nextTime, 0.04, 0.06, 6000);
-    else if (dr === 's') { noise(musicGain, nextTime, 0.12, 0.13, 1500); }
-    nextTime += d;
-    step++;
+    if (dr === 'k') tone(musicGain, 110, nextTime, 0.11, 'sine', 0.26, 40);
+    else if (dr === 'h') noise(musicGain, nextTime, 0.035, 0.05, 6500);
+    else if (dr === 's') noise(musicGain, nextTime, 0.11, 0.11, 1600);
+    nextTime += d; step++;
     if (step > 1e9) step = 0;
   }
 }
@@ -210,15 +173,5 @@ export function playMusic(name) {
   timer = setInterval(scheduler, 45);
   scheduler();
 }
-
-export function stopMusic() {
-  if (timer) { clearInterval(timer); timer = null; }
-  current = null; curName = '';
-}
-
+export function stopMusic() { if (timer) { clearInterval(timer); timer = null; } current = null; curName = ''; }
 export function currentMusic() { return curName; }
-
-/** volume da musica (0..1) - usado para "baixar o som" no fim */
-export function musicVolume(v) {
-  if (musicGain && actx) musicGain.gain.setTargetAtTime(v, actx.currentTime, 0.3);
-}
