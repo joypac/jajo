@@ -163,8 +163,11 @@ export function syncBubbles(lista, camX, camY, escala) {
       bubbleEls.set(b, d);
     }
     if (d.textContent !== b.texto) d.textContent = b.texto;
-    d.style.left = Math.round((b.x - camX) * escala) + 'px';
-    d.style.top = Math.round((b.y - camY) * escala) + 'px';
+    const larg = bubbleLayer.clientWidth || 1;
+    const margem = larg * 0.22;
+    const lx = Math.max(margem, Math.min(larg - margem, (b.x - camX) * escala));
+    d.style.left = Math.round(lx) + 'px';
+    d.style.top = Math.max(14, Math.round((b.y - camY) * escala)) + 'px';
     d.style.opacity = b.t < 0.35 ? String(Math.max(0, b.t / 0.35)) : '1';
     if (b.cor && d.dataset.cor !== b.cor) {
       d.dataset.cor = b.cor;

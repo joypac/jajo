@@ -1,9 +1,9 @@
 {
-  "name": "onde-esta-o-jajo",
+  "name": "andreia-loja-das-meias",
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Um pequeno RPG pixel art absurdo. O objetivo e encontrar o Jajo.",
+  "description": "Um turno na loja das meias. A Andreia faz literalmente tudo. A Sonia nao.",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

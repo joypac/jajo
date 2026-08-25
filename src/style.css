@@ -92,8 +92,8 @@ body.touch.portrait #stage{ align-items:flex-start; padding-top:env(safe-area-in
   background:rgba(13,9,24,.88); color:var(--ink);
   border:calc(var(--s)*1px) solid var(--accent);
   padding:calc(var(--s)*1.5px) calc(var(--s)*2.5px);
-  font-size:calc(var(--s)*3.2px); line-height:1.5; white-space:nowrap;
-  max-width:calc(var(--s)*80px); overflow:hidden; text-overflow:ellipsis;
+  font-size:calc(var(--s)*3.2px); line-height:1.55; text-align:center;
+  width:max-content; max-width:calc(var(--s)*66px);
 }
 .bub.acao{ border-color:var(--green); color:var(--green); }
 .bub::after{

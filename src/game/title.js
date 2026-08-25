@@ -62,7 +62,7 @@ register('titulo', {
     ctx.fillStyle = '#2e2250';
     for (let y = 0; y < view.h; y += 16) ctx.fillRect(0, y, view.w, 8);
     for (const m of meias) {
-      ctx.globalAlpha = 0.75;
+      ctx.globalAlpha = 0.95;
       blit(ctx, m.spr, m.x | 0, m.y | 0);
     }
     ctx.globalAlpha = 1;
