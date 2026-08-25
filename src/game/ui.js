@@ -146,7 +146,43 @@ function escolherCaixa(i) {
 }
 export function fecharCaixa() { caixaCb = null; caixa.classList.add('hidden'); }
 
+/* ---------------- balões posicionados no mundo ---------------- */
+const bubbleLayer = el('bubbles');
+const bubbleEls = new Map();
+
+export function syncBubbles(lista, camX, camY, escala) {
+  const vivos = new Set();
+  for (const b of lista) {
+    vivos.add(b);
+    let d = bubbleEls.get(b);
+    if (!d) {
+      d = document.createElement('div');
+      d.className = 'bub' + (b.acao ? ' acao' : '');
+      d.textContent = b.texto;
+      bubbleLayer.appendChild(d);
+      bubbleEls.set(b, d);
+    }
+    if (d.textContent !== b.texto) d.textContent = b.texto;
+    d.style.left = Math.round((b.x - camX) * escala) + 'px';
+    d.style.top = Math.round((b.y - camY) * escala) + 'px';
+    d.style.opacity = b.t < 0.35 ? String(Math.max(0, b.t / 0.35)) : '1';
+    if (b.cor && d.dataset.cor !== b.cor) {
+      d.dataset.cor = b.cor;
+      d.style.borderColor = b.cor;
+      d.style.color = b.cor === '#ffc44d' ? '#f8f4ea' : b.cor;
+    }
+  }
+  for (const [b, d] of bubbleEls) {
+    if (!vivos.has(b)) { d.remove(); bubbleEls.delete(b); }
+  }
+}
+export function limparBubbles() {
+  for (const [, d] of bubbleEls) d.remove();
+  bubbleEls.clear();
+}
+
 export function esconderTudo() {
+  limparBubbles();
   serve.classList.add('hidden');
   caixa.classList.add('hidden');
   talk.classList.add('hidden');

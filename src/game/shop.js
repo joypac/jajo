@@ -661,12 +661,12 @@ function desenharChao(cx, cy) {
       if (!est) continue;
       const px = (x * T - cx) | 0, py = (y * T - cy) | 0;
       if (est === 1) {
-        ctx.fillStyle = 'rgba(126,102,64,0.17)';
+        ctx.fillStyle = 'rgba(126,100,62,0.24)';
         ctx.fillRect(px, py, T, T);
-        ctx.fillStyle = 'rgba(96,76,48,0.42)';
+        ctx.fillStyle = 'rgba(92,72,44,0.55)';
         ctx.fillRect(px + 3, py + 5, 3, 2); ctx.fillRect(px + 9, py + 10, 4, 2); ctx.fillRect(px + 6, py + 2, 2, 2);
       } else if (est === 2) {
-        ctx.fillStyle = 'rgba(120,190,235,0.38)';
+        ctx.fillStyle = 'rgba(110,190,240,0.5)';
         ctx.fillRect(px, py, T, T);
         ctx.fillStyle = 'rgba(230,250,255,0.55)';
         const f = (Math.floor(animT * 4) + x + y) % 4;
@@ -797,13 +797,13 @@ function desenhar() {
 
   fx.drawParticles(cx, cy);
 
-  // balões
-  for (const b of bolhas) caixaTexto(b.x - cx, b.y - cy, b.texto, b.cor, 6);
-
-  // etiqueta da acção + barra de trabalho
-  if (promptAcao && !UI.atendimentoAberto() && !UI.caixaAberta()) {
-    caixaTexto(A.x - cx, A.y - 26 - cy, promptAcao.label, '#ffc44d', 6);
+  // balões e etiqueta de acção: em DOM, para o texto ficar nítido
+  const paraMostrar = bolhas.slice();
+  if (promptAcao && !UI.atendimentoAberto() && !UI.caixaAberta() && !UI.talkAtivo()) {
+    paraMostrar.push({ x: A.x, y: A.y - 20, texto: promptAcao.label, cor: '#6fd18a', acao: true, t: 1 });
   }
+  UI.syncBubbles(paraMostrar, camX, camY, view.scale);
+
   if (A.trabalho) {
     const w = 26, p = Math.min(1, A.trabalho.prog / trabalhoDuracao(A.trabalho.tipo));
     const bx = (A.x - w / 2 - cx) | 0, by = (A.y - 34 - cy) | 0;
