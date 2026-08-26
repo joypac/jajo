@@ -39,7 +39,10 @@ function boot() {
         prateleiras: () => sh.prateleiras,
         tp: (x, y) => { sh.A.x = x * 16; sh.A.y = y * 16; },
         adiantar: seg => { st.S.t += seg; },
-        spawn: t => sh.debugSpawn(t)
+        spawn: t => sh.debugSpawn(t),
+        rota: (x, y) => sh.debugRota(x, y),
+        estado: () => sh.debugEstado(),
+        sujar: f => sh.debugSujarTudo(f)
       };
     });
   }

@@ -51,17 +51,50 @@ leva-a a uma prateleira e mantém A para a arrumar. Se deixares acumular, a loja
 deixa-o **molhado**. Se voltares a pisar molhado, fica sujo outra vez — e os clientes
 atravessam tudo e deixam pegadas. É um pequeno puzzle de percurso.
 
-**☕ Venezia** — o café em frente. Quando a energia baixa, atravessa a rua e mantém A
-no balcão: 🥪 sandes de atum, **ENERGIA +35**.
+**☕ Venezia** — o café em frente. Quando a energia baixa, atravessa a rua:
+no balcão, 🥪 **sandes de atum (+35 energia)**; na máquina, ☕ **café (+15)**.
+Basta carregar em A uma vez.
 
 **💰 Caixa** — só na última hora. Contar notas, contar moedas, confirmar, fechar.
 Se um cliente estiver à espera, alguém vai dizer *"Desculpe…"* e a conta fica a meio.
 
-**⏰ A última hora** — a Sónia vai-se embora e aparece a lista do que tem de ficar
-feito antes de fechar. Os clientes continuam a entrar.
+**⏰ A última hora** — a Sónia vai-se embora e aparece no canto uma pequena lista
+do que tem de ficar feito antes de fechar. Os clientes continuam a entrar.
+
+### O ritmo do dia
+
+O caos é distribuído de propósito:
+
+| | O que acontece |
+|---|---|
+| **Manhã** | poucos clientes, loja quase arrumada — é quando chegam quase todas as entregas |
+| **Meio do dia** | começa a entrar mais gente, a loja começa a desarrumar-se |
+| **Tarde** | mais clientes, mais meias no chão, o chão suja-se a sério |
+| **Última hora** | não chega stock novo, mas há tudo para fechar |
+
+Cada turno sorteia também um tipo de dia — **calmo**, **normal** ou **complicado** —
+que muda a quantidade de clientes, de entregas e de sujidade. Nenhum é impossível.
+
+Se geres bem o tempo (stock de manhã, arrumação a meio, limpeza ao fim da tarde),
+dá mesmo para acabar com tudo feito: **🏆 TURNO PERFEITO**.
 
 No fim há um **resumo do turno**, com estrelas e com a estatística mais importante:
 *Ajuda da Sónia: 0*.
+
+### O senhor Alberto
+
+Há um cliente que aparece de vez em quando e não vem comprar meias: vem contar a vida.
+Foi ao hospital, teve uma consulta, tem um problema com os vizinhos, estava um trânsito.
+E, sobretudo, bebe demasiado vinho às refeições:
+
+> **ALBERTO:** Ontem foram quatro.
+> **ANDREIA:** Quatro copos?
+> **ALBERTO:** Sim.
+> **ANDREIA:** Não pode ser, senhor Alberto, isso faz-lhe mal.
+
+Há também clientes que reparam que a Andreia está cansada, clientes que perguntam o preço
+e vão embora, clientes que querem *outro* verde, e — muito raramente — alguém que quer
+experimentar as meias e não gosta nada da resposta.
 
 ---
 

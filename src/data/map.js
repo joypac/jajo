@@ -71,11 +71,14 @@ export const MAP = {
 
   /* onde os clientes gostam de parar (em frente às prateleiras) */
   pontosCliente: [
-    { x: 2.5, y: 2.6 }, { x: 6.5, y: 2.6 }, { x: 10.5, y: 2.6 },
-    { x: 2.5, y: 6.6 }, { x: 6.5, y: 6.6 }, { x: 10.5, y: 6.6 },
-    { x: 13.5, y: 6.5 }, { x: 4.0, y: 9.5 }, { x: 8.5, y: 8.0 },
-    { x: 13.0, y: 10.6 }, { x: 6.0, y: 11.5 }, { x: 11.0, y: 11.8 }
+    /* ao lado das prateleiras, não em cima do sítio onde a Andreia arruma */
+    { x: 1.7, y: 3.3 }, { x: 3.4, y: 3.3 }, { x: 5.7, y: 3.3 }, { x: 7.4, y: 3.3 },
+    { x: 9.7, y: 3.3 }, { x: 11.4, y: 3.3 },
+    { x: 1.7, y: 7.3 }, { x: 3.4, y: 7.3 }, { x: 5.7, y: 7.3 }, { x: 7.4, y: 7.3 },
+    { x: 9.7, y: 7.3 }, { x: 11.4, y: 7.3 },
+    { x: 13.6, y: 6.5 }, { x: 8.5, y: 9.4 }, { x: 13.2, y: 11.6 }, { x: 5.0, y: 11.5 }
   ],
+
 
   /* onde caem caixas de stock */
   pontosStock: [

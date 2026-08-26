@@ -248,3 +248,13 @@ body.touch #touch{ display:block !important; }
 /* telemóvel deitado: caixas por cima dos botões */
 body.touch:not(.portrait) #talk,
 body.touch:not(.portrait) #serve{ left:calc(var(--t)*52px); right:calc(var(--t)*52px); bottom:calc(var(--t)*4px); }
+
+/* ---------------- turno perfeito ---------------- */
+#sum-check{
+  margin-bottom:calc(var(--s)*4px); padding:calc(var(--s)*3px);
+  border:calc(var(--s)*1px) solid var(--green);
+  background:rgba(111,209,138,.10);
+  font-size:calc(var(--s)*3.6px); line-height:1.9; color:var(--green); text-align:left;
+}
+#sum-check .nada{ color:var(--ink); }
+#sum-verdict small{ color:var(--dim); font-size:calc(var(--s)*3.2px); }

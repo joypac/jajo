@@ -62,8 +62,24 @@ register('resumo', {
       ['Ajuda da Sónia', st.ajudaSonia]
     ];
 
-    elTitle.textContent = tudoFeito ? '🏆 TURNO PERFEITO' : 'RESUMO DO TURNO';
+    elTitle.textContent = tudoFeito ? '🏆 TURNO PERFEITO!' : 'RESUMO DO TURNO';
     elTitle.classList.toggle('perfect', tudoFeito);
+
+    // quando corre tudo bem, mostrar a lista com tudo feito
+    const inner = el.querySelector('.sum-inner');
+    let check = document.getElementById('sum-check');
+    if (!check) {
+      check = document.createElement('div');
+      check.id = 'sum-check';
+      inner.insertBefore(check, elRows);
+    }
+    if (tudoFeito) {
+      check.innerHTML = (p.tarefas || []).map(t => '<div>✓ ' + t.label + '</div>').join('') +
+        '<div class="nada">✓ Nenhuma tarefa pendente</div>';
+      check.classList.remove('hidden');
+    } else {
+      check.classList.add('hidden');
+    }
 
     elRows.innerHTML = linhas.map(([k, v]) =>
       '<div class="row' + (k === 'Ajuda da Sónia' ? ' zero' : '') + '"><span>' + k + '</span><b>' + v + '</b></div>'
@@ -80,8 +96,8 @@ register('resumo', {
     elStars.textContent = '★'.repeat(estrelas) + '☆'.repeat(5 - estrelas);
     elStars.style.color = '#ffc44d';
 
-    elVerdict.textContent = tudoFeito
-      ? 'A Andreia fez literalmente tudo. A Sónia não fez nada.'
+    elVerdict.innerHTML = tudoFeito
+      ? 'A loja está impecável.<br>A Andreia fez tudo.<br><small>A Sónia não fez nada.</small>'
       : VEREDICTOS[Math.min(VEREDICTOS.length - 1, estrelas - 1)];
 
     el.classList.remove('hidden');

@@ -43,7 +43,7 @@ export function criarCliente(porta) {
     perguntasFeitas: 0,
     pergunta: null,
     desarrumou: 0,
-    saudacao: CHEGADAS[(Math.random() * CHEGADAS.length) | 0],
+    saudacao: (tipo.saudacoes || CHEGADAS)[(Math.random() * (tipo.saudacoes || CHEGADAS).length) | 0],
     atendido: false
   };
 }
@@ -80,11 +80,12 @@ export function atualizarCliente(c, dt, m) {
     c.mov = false;
     c.timer -= dt;
     if (c.prateleira) {
-      const q = c.tipo.desarruma * 5.5 * dt;
+      const q = c.tipo.desarruma * 3.2 * dt;
       m.desarrumar(c.prateleira, q);
       c.desarrumou += q;
     }
-    if (Math.random() < c.tipo.desarruma * 0.28 * dt) m.largarMeia(c.x, c.y + 8);
+    const caos = m.fatorCaos ? m.fatorCaos() : 1;
+    if (Math.random() < c.tipo.desarruma * 0.28 * caos * dt) m.largarMeia(c.x, c.y + 8);
     if (c.timer <= 0) {
       if (c.perguntasFeitas < c.tipo.perguntas) {
         c.pergunta = perguntaPara(c.tipo);

@@ -122,7 +122,8 @@ export const TIPOS_CLIENTE = [
   { id: 'conversa',   nome: 'só quer conversar',    perguntas: 1, compra: 0.06, paciencia: 10, desarruma: 0.5, cor: '#a89ec4', pool: 'conversa' },
   { id: 'preco',      nome: 'pergunta o preço',     perguntas: 1, compra: 0.07, paciencia: 9,  desarruma: 0.7, cor: '#ffc44d', pool: 'preco' },
   { id: 'cor',        nome: 'quer outro verde',     perguntas: 1, compra: 0.0,  paciencia: 11, desarruma: 1.3, cor: '#6fd18a', pool: 'cor' },
-  { id: 'senhor',     nome: 'O SENHOR',             perguntas: 1, compra: 0.0,  paciencia: 24, desarruma: 0.1, cor: '#e8c88a', pool: 'senhor', sprite: 1 },
+  { id: 'senhor',     nome: 'Senhor Alberto',      perguntas: 1, compra: 0.0,  paciencia: 24, desarruma: 0.1, cor: '#e8c88a', pool: 'senhor', sprite: 1,
+    saudacoes: ['Ó Andreia, boa tarde.', 'Então, Andreia?', 'Andreia, ouça lá uma coisa.', 'Ó Andreia.'] },
   { id: 'provador',   nome: 'quer experimentar',    perguntas: 1, compra: 0.0,  paciencia: 12, desarruma: 1.0, cor: '#ff6b6b', pool: 'provador' }
 ];
 
@@ -264,71 +265,120 @@ export const PERGUNTAS_PREOCUPADO = [
   }
 ];
 
-/* O SENHOR. Aparece sempre. A consulta é dele. */
+/* O SENHOR ALBERTO. Aparece sempre. A consulta é dele. */
 export const CONVERSAS_SENHOR = [
   {
     q: 'Então, Andreia, fui ao hospital.',
     opts: ['Ah, sim?', 'Espero que esteja tudo bem.', 'E correu bem?'], bom: 0, nuncaCompra: true,
-    seguimento: [['SENHOR', 'Pois. Tive lá uma coisa qualquer.'], ['ANDREIA', 'Espero que esteja tudo bem.'], ['SENHOR', 'Também eu.']]
+    seguimento: [['ALBERTO', 'Pois. Tive lá uma coisa qualquer.'], ['ANDREIA', 'Espero que esteja tudo bem.'], ['ALBERTO', 'Também eu.']]
   },
   {
     q: 'Agora tenho tido um problema com os vizinhos.',
     opts: ['Ai, isso é chato.', 'Espero que se resolva.', 'A sério?'], bom: 0, nuncaCompra: true,
-    seguimento: [['SENHOR', 'Pois é.'], ['ANDREIA', 'Espero que se resolva.'], ['SENHOR', 'Hei-de resolver.']]
+    seguimento: [['ALBERTO', 'Pois é.'], ['ANDREIA', 'Espero que se resolva.'], ['ALBERTO', 'Hei-de resolver.']]
   },
   {
     q: 'Hoje estava um trânsito...',
     opts: ['Está, está.', 'Imagino.', 'Nem me diga.'], bom: 0, nuncaCompra: true,
-    seguimento: [['SENHOR', 'Demorei imenso a chegar.'], ['ANDREIA', 'Imagino.'], ['SENHOR', 'Uma coisa impressionante.']]
+    seguimento: [['ALBERTO', 'Demorei imenso a chegar.'], ['ANDREIA', 'Imagino.'], ['ALBERTO', 'Uma coisa impressionante.']]
   },
   {
     q: 'Está um tempo horrível.',
     opts: ['Está mesmo.', 'Pois está.', 'E dizem que ainda piora.'], bom: 0, nuncaCompra: true,
-    seguimento: [['SENHOR', 'Ontem também esteve.'], ['ANDREIA', 'Esteve, esteve.']]
+    seguimento: [['ALBERTO', 'Ontem também esteve.'], ['ANDREIA', 'Esteve, esteve.']]
   },
   {
     q: 'Dormi mal esta noite.',
     opts: ['Ai que chatice.', 'Não descansou nada, então.', 'Isso sente-se o dia todo.'], bom: 1, nuncaCompra: true,
-    seguimento: [['SENHOR', 'Acordei às quatro.'], ['ANDREIA', 'Que horas.'], ['SENHOR', 'Pois.']]
+    seguimento: [['ALBERTO', 'Acordei às quatro.'], ['ANDREIA', 'Que horas.'], ['ALBERTO', 'Pois.']]
   },
   {
     q: 'Tive de esperar duas horas na consulta.',
     opts: ['Duas horas?', 'Isso é muito tempo.', 'E depois foi rápido, aposto.'], bom: 2, nuncaCompra: true,
-    seguimento: [['SENHOR', 'Duas horas e vinte.'], ['ANDREIA', 'Credo.'], ['SENHOR', 'E depois foram cinco minutos.']]
+    seguimento: [['ALBERTO', 'Duas horas e vinte.'], ['ANDREIA', 'Credo.'], ['ALBERTO', 'E depois foram cinco minutos.']]
   },
   {
     q: 'Rebentou-me um cano em casa.',
     opts: ['Ai não!', 'E ficou tudo alagado?', 'Isso dá um trabalho...'], bom: 1, nuncaCompra: true,
-    seguimento: [['SENHOR', 'Ficou aquilo tudo num charco.'], ['ANDREIA', 'Que chatice.']]
+    seguimento: [['ALBERTO', 'Ficou aquilo tudo num charco.'], ['ANDREIA', 'Que chatice.']]
   },
   {
     q: 'Lembra-se do que lhe disse dos vizinhos?',
     opts: ['Lembro, sim.', 'Ah, e então?', 'Resolveu-se?'], bom: 0, nuncaCompra: true,
-    seguimento: [['SENHOR', 'Pois. Continua na mesma.'], ['ANDREIA', 'Pois...'], ['SENHOR', 'Enfim.']]
+    seguimento: [['ALBERTO', 'Pois. Continua na mesma.'], ['ANDREIA', 'Pois...'], ['ALBERTO', 'Enfim.']]
   },
   {
     q: 'Ligou-me o meu genro ontem.',
     opts: ['Ah, que bom.', 'E estava tudo bem?', 'Sim?'], bom: 0, nuncaCompra: true,
-    seguimento: [['SENHOR', 'Era só para perguntar uma coisa.'], ['ANDREIA', 'Ah.'], ['SENHOR', 'Já nem me lembro o quê.']]
+    seguimento: [['ALBERTO', 'Era só para perguntar uma coisa.'], ['ANDREIA', 'Ah.'], ['ALBERTO', 'Já nem me lembro o quê.']]
   },
   {
     q: 'Fui ao médico outra vez.',
     opts: ['E o que é que ele disse?', 'Espero que esteja melhor.', 'Outra vez?'], bom: 0, nuncaCompra: true,
-    seguimento: [['SENHOR', 'Disse para eu andar mais.'], ['ANDREIA', 'E anda?'], ['SENHOR', 'Venho cá, não venho?']]
+    seguimento: [['ALBERTO', 'Disse para eu andar mais.'], ['ANDREIA', 'E anda?'], ['ALBERTO', 'Venho cá, não venho?']]
   },
   {
     q: 'Andreia, tenho estado preocupado com uma coisa.',
     opts: ['Com o quê?', 'Diga.', 'Espero que não seja nada.'], bom: 0, nuncaCompra: true,
-    seguimento: [['SENHOR', 'É uma luz que se acendeu no carro.'], ['ANDREIA', 'Ah.'], ['SENHOR', 'Deve ser alguma coisa.']]
+    seguimento: [['ALBERTO', 'É uma luz que se acendeu no carro.'], ['ANDREIA', 'Ah.'], ['ALBERTO', 'Deve ser alguma coisa.']]
   },
   {
     q: 'Estive à espera do autocarro quarenta minutos.',
     opts: ['Quarenta?', 'E chegou algum?', 'Isso é uma vergonha.'], bom: 1, nuncaCompra: true,
-    seguimento: [['SENHOR', 'Vieram dois ao mesmo tempo.'], ['ANDREIA', 'É sempre assim.'], ['SENHOR', 'É sempre.']]
+    seguimento: [['ALBERTO', 'Vieram dois ao mesmo tempo.'], ['ANDREIA', 'É sempre assim.'], ['ALBERTO', 'É sempre.']]
   }
 ];
 
 /* conversa de circunstância */
+/* a running gag do vinho do senhor Alberto */
+export const CONVERSAS_VINHO = [
+  {
+    q: 'Ontem bebi três copos de vinho ao jantar.',
+    opts: ['Não pode ser, senhor Alberto, isso faz-lhe mal.', 'Três copos?', 'Ó senhor Alberto...'], bom: 0, nuncaCompra: true,
+    seguimento: [['ALBERTO', 'Só três.'], ['ANDREIA', 'Senhor Alberto…']]
+  },
+  {
+    q: 'Ontem foram quatro.',
+    opts: ['Quatro copos?', 'Não pode ser, senhor Alberto.', 'Quatro?'], bom: 0, nuncaCompra: true,
+    seguimento: [['ALBERTO', 'Sim.'], ['ANDREIA', 'Não pode ser, senhor Alberto, isso faz-lhe mal.'], ['ALBERTO', 'Foi ao jantar.']]
+  },
+  {
+    q: 'Foram cinco.',
+    opts: ['Cinco copos de vinho?', 'Senhor Alberto…', 'Cinco?'], bom: 0, nuncaCompra: true,
+    seguimento: [['ALBERTO', 'Pois.'], ['ANDREIA', 'Senhor Alberto…'], ['ALBERTO', 'Mas eram pequenos.']]
+  },
+  {
+    q: 'Eu só bebo vinho à refeição.',
+    opts: ['Mas bebe bastante, senhor Alberto.', 'Ainda assim...', 'E quantas refeições faz?'], bom: 0, nuncaCompra: true,
+    seguimento: [['ALBERTO', 'Faço quatro.'], ['ANDREIA', 'Quatro?'], ['ALBERTO', 'Cinco, com a ceia.']]
+  },
+  {
+    q: 'Hoje não bebi vinho.',
+    opts: ['Muito bem, senhor Alberto 😊', 'Ai que bom.', 'A sério?'], bom: 0, nuncaCompra: true,
+    seguimento: [['ALBERTO', 'Só ontem.'], ['ANDREIA', 'Ah.']]
+  },
+  {
+    q: 'O médico disse-me para cortar no vinho.',
+    opts: ['E cortou?', 'Ainda bem, senhor Alberto.', 'E o que é que fez?'], bom: 0, nuncaCompra: true,
+    seguimento: [['ALBERTO', 'Cortei.'], ['ANDREIA', 'Boa 😊'], ['ALBERTO', 'Agora é só ao almoço e ao jantar.']]
+  },
+  {
+    q: 'Trouxeram-me um garrafão da aldeia.',
+    opts: ['Um garrafão?', 'Isso é muito vinho, senhor Alberto.', 'E já provou?'], bom: 1, nuncaCompra: true,
+    seguimento: [['ALBERTO', 'Cinco litros.'], ['ANDREIA', 'Senhor Alberto…'], ['ALBERTO', 'Dura-me a semana.']]
+  },
+  {
+    q: 'Ontem à noite bebi só um copito.',
+    opts: ['Ainda bem 😊', 'Um copito?', 'Muito bem, senhor Alberto.'], bom: 0, nuncaCompra: true,
+    seguimento: [['ALBERTO', 'Depois bebi outro.'], ['ANDREIA', 'Ah.'], ['ALBERTO', 'E mais um.']]
+  },
+  {
+    q: 'O vinho da casa lá do restaurante é bom.',
+    opts: ['Ai é?', 'E bebeu muito?', 'Fico contente 😊'], bom: 1, nuncaCompra: true,
+    seguimento: [['ALBERTO', 'Bebi o que estava na mesa.'], ['ANDREIA', 'E estava lá muito?'], ['ALBERTO', 'Uma garrafa.']]
+  }
+];
+
 export const SMALL_TALK = [
   { q: 'Bom dia.', opts: ['Bom dia 😊', 'Bom dia, diga.', 'Olá, bom dia.'], bom: 0,
     seguimento: [['CLIENTE', 'Era só para ver.'], ['ANDREIA', 'Esteja à vontade 😊']] },
@@ -373,7 +423,7 @@ export const PERGUNTAS_PROVADOR = [
 /* pools por tipo de cliente */
 export const POOLS = {
   preocupado: PERGUNTAS_PREOCUPADO,
-  senhor: CONVERSAS_SENHOR,
+  senhor: CONVERSAS_SENHOR.concat(CONVERSAS_VINHO),
   conversa: SMALL_TALK,
   preco: PERGUNTAS_PRECO,
   cor: PERGUNTAS_COR,

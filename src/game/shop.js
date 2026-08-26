@@ -62,7 +62,7 @@ export function iniciarTurno() {
   SONIA.saindo = false; SONIA.saiu = false; SONIA.chama = 0;
 
   prateleiras = MAP.objects.filter(o => o.kind === 'prateleira').map(o => Object.assign({}, o, {
-    arrumacao: 78 + Math.random() * 20,
+    arrumacao: 88 + Math.random() * 12,
     frente: { x: (o.x + o.w / 2) * T, y: (o.y + o.h) * T + 8 }
   }));
   solidos = MAP.objects.filter(o => !o.deco).map(o => ({
@@ -72,7 +72,7 @@ export function iniciarTurno() {
 
   clientes = []; caixasStock = []; meiasChao = []; meiasRua = []; bolhas = [];
   clienteAtivo = null; caixaPasso = 0; cutscene = null; promptAcao = null;
-  tSpawn = 2.5; tStock = 12; tSonia = 18; tEvento = 9;
+  tSpawn = 4; tStock = 6; tSonia = 20; tEvento = 16;
   avisoMolhado = 0; avisoEnergia = 0;
 
   meiasTeto = MAP.teto.slice(0, 3).map(p => ({ x: p.x * T, y: p.y * T, meia: meiaAleatoria().id, fase: Math.random() * 6 }));
@@ -86,7 +86,7 @@ export function iniciarTurno() {
     const t = TILES[MAP.tiles[y][x]];
     if (t && t.chao && !tapadoPorObjeto(x, y)) {
       chaoTiles.push(y * MW + x);
-      chao[y * MW + x] = Math.random() < 0.22 ? 1 : 0;
+      chao[y * MW + x] = Math.random() < 0.06 * S.dia.sujidade ? 1 : 0;
     }
   }
 
@@ -97,7 +97,7 @@ export function iniciarTurno() {
     calcularRota(porta.x * T, porta.y * T, p.x * T, p.y * T) !== null);
   if (!pontosValidos.length) pontosValidos = MAP.pontosCliente.slice();
 
-  for (let i = 0; i < 5; i++) largarMeiaEm(3 + Math.random() * 11, 6 + Math.random() * 6);
+  for (let i = 0; i < 2; i++) largarMeiaEm(3 + Math.random() * 11, 6 + Math.random() * 6);
 
   tarefas = [
     { id: 'loja', label: 'Arrumar loja', feito: false },
@@ -112,6 +112,60 @@ export function iniciarTurno() {
   UI.showHud(true);
   playMusic('loja');
   musicVolume(0.5);
+  setTimeout(() => UI.toast(S.dia.nome, S.dia.id === 'complicado' ? 'bad' : 'good', 2800), 900);
+}
+
+/* ------------------------------------------------------------
+   O RITMO DO DIA
+   De manhã há tempo para respirar e para tratar do stock.
+   À tarde entra mais gente e a loja suja-se a sério.
+   Na última hora é a correr, mas já não chega stock novo.
+   ------------------------------------------------------------ */
+function progressoDoDia() {
+  if (S.fase === 'ultima' || S.fase === 'fim') return 1;
+  return Math.min(1, S.t / DURACAO_NORMAL);
+}
+function ritmoClientes() {
+  const p = progressoDoDia();
+  let base;
+  if (S.fase === 'ultima') base = 7.5;
+  else if (p < 0.30) base = 13;      // manhã: quase de preparação
+  else if (p < 0.62) base = 10;      // meio do dia
+  else base = 8.2;                   // tarde
+  return base * S.dia.clientes;
+}
+function maxClientes() {
+  const p = progressoDoDia();
+  if (S.fase === 'ultima') return 5;
+  if (p < 0.30) return 3;
+  if (p < 0.62) return 4;
+  return 5;
+}
+function ritmoStock() {
+  const p = progressoDoDia();
+  if (S.fase === 'ultima') return 1e9;   // já não chega stock a esta hora
+  let base;
+  if (p < 0.32) base = 18;               // as entregas são de manhã
+  else if (p < 0.62) base = 30;
+  else base = 58;                        // ao fim da tarde quase nada
+  return base / S.dia.stock;
+}
+function fatorSujidade() {
+  const p = progressoDoDia();
+  const curva = S.fase === 'ultima' ? 0.7 : (0.22 + p * 0.9);
+  return curva * S.dia.sujidade;
+}
+function fatorDesarruma() {
+  const p = progressoDoDia();
+  const curva = S.fase === 'ultima' ? 1.05 : (0.42 + p * 0.7);
+  return curva * S.dia.desarruma;
+}
+function ritmoEventos() {
+  const p = progressoDoDia();
+  if (S.fase === 'ultima') return 13 + Math.random() * 10;
+  if (p < 0.32) return 22 + Math.random() * 14;
+  if (p < 0.62) return 16 + Math.random() * 12;
+  return 13 + Math.random() * 11;
 }
 
 function tapadoPorObjeto(tx, ty) {
@@ -221,7 +275,8 @@ function sujar(px, py) {
 function percentChaoLimpo() {
   if (!chaoTiles.length) return 100;
   let limpos = 0;
-  for (const i of chaoTiles) if (chao[i] === 0) limpos++;
+  // molhado também conta como limpo: acabou de ser esfregado, está só a secar
+  for (const i of chaoTiles) if (chao[i] !== 1) limpos++;
   return Math.round(limpos / chaoTiles.length * 100);
 }
 
@@ -238,7 +293,7 @@ function largarMeia(px, py) {
   S.stats.meiasChao++;
   sfx('meia');
 }
-function desarrumar(p, q) { p.arrumacao = Math.max(0, p.arrumacao - q); }
+function desarrumar(p, q) { p.arrumacao = Math.max(0, p.arrumacao - q * fatorDesarruma()); }
 function arrumacaoMedia() {
   if (!prateleiras.length) return 100;
   return Math.round(prateleiras.reduce((a, p) => a + p.arrumacao, 0) / prateleiras.length);
@@ -247,7 +302,7 @@ function stockPendente() { return caixasStock.reduce((a, c) => a + c.pares, 0); 
 
 function chegarStock(surpresa) {
   const p = MAP.pontosStock[(Math.random() * MAP.pontosStock.length) | 0];
-  const pares = 8 + ((Math.random() * 16) | 0);
+  const pares = Math.round((6 + Math.random() * 11) * (S.fase === 'ultima' ? 0.5 : 1));
   caixasStock.push({ x: p.x * T + (Math.random() - .5) * 10, y: p.y * T, pares, t: 0 });
   S.stats.stockRecebido += pares;
   sfx('caixote');
@@ -337,9 +392,22 @@ function pisar(i) {
     }
     return;
   }
-  if (comEsfregona && chao[i] === 1) {        // limpar
-    chao[i] = 2; chaoMolhado[i] = 6;
-    gastarEnergia(0.9);
+  if (!comEsfregona) return;
+
+  // a esfregona limpa uma faixa: o tile debaixo dos pés e os dois ao lado
+  const tx = i % MW, ty = (i / MW) | 0;
+  const lado = (A.dir === 'left' || A.dir === 'right') ? [[0, -1], [0, 0], [0, 1]] : [[-1, 0], [0, 0], [1, 0]];
+  let limpou = false;
+  for (const [dx, dy] of lado) {
+    const j = (ty + dy) * MW + (tx + dx);
+    if (tx + dx < 0 || tx + dx >= MW || ty + dy < 0 || ty + dy >= MH) continue;
+    if (!chaoTiles.includes(j)) continue;
+    if (chao[j] !== 1) continue;
+    chao[j] = 2; chaoMolhado[j] = 4.5;
+    limpou = true;
+  }
+  if (limpou) {
+    gastarEnergia(0.8);
     sfx('esfregona');
     fx.burst(A.x, A.y, { count: 3, speed: 16, life: .4, color: '#9fd4ea', grav: 10 });
   }
@@ -445,14 +513,14 @@ function acaoInstantanea(a) {
 }
 
 function trabalhoDuracao(tipo) {
-  if (tipo === 'arrumar') return 1.0;
-  if (tipo === 'stock') return 1.4;
+  if (tipo === 'arrumar') return 0.85;
+  if (tipo === 'stock') return 1.2;
   return 1;
 }
 
 function concluirTrabalho(w) {
   if (w.tipo === 'arrumar') {
-    const ganho = 34 + Math.random() * 16;
+    const ganho = 46 + Math.random() * 16;
     const antes = w.alvo.arrumacao;
     w.alvo.arrumacao = Math.min(100, w.alvo.arrumacao + ganho);
     S.stats.arrumados += Math.round((w.alvo.arrumacao - antes) / 100 * 24);
@@ -623,6 +691,7 @@ const mundo = {
   },
   desarrumar,
   largarMeia,
+  fatorCaos: () => fatorDesarruma(),
   aviso: c => { sfx('pergunta'); bolha(c.x, c.y - 22, c.saudacao, c.tipo.cor, 1.8); },
   aoSair: c => {
     if (c.desarrumou > 16) {
@@ -672,7 +741,7 @@ const mundo = {
 function pisarCliente(i, c) {
   if (i < 0 || !chaoTiles.includes(i)) return;
   if (chao[i] === 2 || chao[i] === 0) {
-    if (Math.random() < 0.55) {
+    if (Math.random() < 0.34 * fatorSujidade()) {
       const eraLimpo = chao[i] === 0 || chao[i] === 2;
       chao[i] = 1; chaoMolhado[i] = 0;
       if (eraLimpo && Math.random() < 0.3) {
@@ -689,7 +758,12 @@ function pisarCliente(i, c) {
    ============================================================ */
 function eventoAleatorio() {
   const opcoes = ['meiaCaiu', 'desarrumou', 'stockSurpresa', 'meiaRua', 'meiaTeto', 'soniaChama', 'meiaCaiu', 'desarrumou'];
-  const e = opcoes[(Math.random() * opcoes.length) | 0];
+  let e = opcoes[(Math.random() * opcoes.length) | 0];
+  // na última hora só muito raramente chega uma caixa (e pequena)
+  if (e === 'stockSurpresa') {
+    const faltaPouco = DURACAO_TOTAL - S.t < 45;
+    if (faltaPouco || (S.fase === 'ultima' && Math.random() > 0.22)) e = 'meiaCaiu';
+  }
   if (e === 'meiaCaiu') {
     const p = prateleiras[(Math.random() * prateleiras.length) | 0];
     largarMeia(p.frente.x, p.frente.y);
@@ -771,10 +845,10 @@ function atualizarCutscene(dt) {
 }
 
 function atualizarTarefas() {
-  tarefas[0].feito = arrumacaoMedia() >= 92;
+  tarefas[0].feito = arrumacaoMedia() >= 90;
   tarefas[1].feito = caixasStock.length === 0 && !(A.carrega && A.carrega.tipo === 'caixa');
   tarefas[2].feito = S.caixaFeita;
-  tarefas[3].feito = percentChaoLimpo() >= 95;
+  tarefas[3].feito = percentChaoLimpo() >= 88;
   tarefas[4].feito = !clientes.some(c => c.estado === 'esperar');
   tarefas[5].feito = meiasChao.length === 0;
   UI.renderTasklist(tarefas);
@@ -1021,10 +1095,8 @@ register('loja', {
     if (S.fase !== 'fim') S.t += dt;
     if (S.fase === 'normal' && S.t >= DURACAO_NORMAL) comecarCutscene();
     if (S.fase === 'cutscene') { atualizarCutscene(dt); }
-    if (S.fase === 'ultima') {
-      atualizarTarefas();
-      if (S.t >= DURACAO_TOTAL) { fecharLoja(); return; }
-    }
+    atualizarTarefas();
+    if (S.fase === 'ultima' && S.t >= DURACAO_TOTAL) { fecharLoja(); return; }
 
     const parado = S.fase === 'cutscene' || UI.atendimentoAberto() || UI.caixaAberta() || S.fase === 'fim';
 
@@ -1036,8 +1108,14 @@ register('loja', {
 
       // trabalho contínuo (manter A)
       if (A.trabalho) {
-        const perto = promptAcao && promptAcao.tipo === A.trabalho.tipo;
-        if (!btn.a || !perto) { A.trabalho = null; }
+        const alvoT = A.trabalho.alvo;
+        let aoAlcance = true;
+        if (alvoT && alvoT.frente) {
+          aoAlcance = Math.hypot(alvoT.frente.x - A.x, alvoT.frente.y - A.y) < 30;
+        } else {
+          aoAlcance = !!(promptAcao && promptAcao.tipo === A.trabalho.tipo);
+        }
+        if (!btn.a || !aoAlcance) { A.trabalho = null; }
         else {
           A.trabalho.prog += dt;
           if (A.trabalho.tipo === 'arrumar') gastarEnergia(4 * dt);
@@ -1073,9 +1151,9 @@ register('loja', {
     /* ---- clientes ---- */
     if (S.fase !== 'fim') {
       tSpawn -= dt;
-      const ritmo = S.fase === 'ultima' ? 5.5 : 7.5;
-      if (tSpawn <= 0 && clientes.length < 6) {
-        tSpawn = ritmo * (0.6 + Math.random() * 0.9);
+      const podeEntrar = S.t < DURACAO_TOTAL - 13;   // ninguém entra mesmo à hora de fechar
+      if (tSpawn <= 0 && clientes.length < maxClientes() && podeEntrar) {
+        tSpawn = ritmoClientes() * (0.75 + Math.random() * 0.6);
         const c = criarCliente(MAP.portaLoja);
         clientes.push(c);
         S.stats.clientes++;
@@ -1089,7 +1167,11 @@ register('loja', {
     /* ---- stock ---- */
     if (S.fase !== 'fim') {
       tStock -= dt;
-      if (tStock <= 0) { tStock = (S.fase === 'ultima' ? 26 : 34) + Math.random() * 16; chegarStock(false); }
+      if (tStock <= 0) {
+        const r = ritmoStock();
+        tStock = r * (0.8 + Math.random() * 0.5);
+        if (r < 1e8) chegarStock(false);
+      }
     }
 
     /* ---- Sónia ---- */
@@ -1102,7 +1184,7 @@ register('loja', {
     /* ---- eventos ---- */
     if (S.fase === 'normal' || S.fase === 'ultima') {
       tEvento -= dt;
-      if (tEvento <= 0) { tEvento = 11 + Math.random() * 12; eventoAleatorio(); }
+      if (tEvento <= 0) { tEvento = ritmoEventos(); eventoAleatorio(); }
     }
 
     UI.refreshHud(infoHud());
@@ -1127,6 +1209,28 @@ export function percentLoja() {
   const pStock = Math.max(0, 100 - stockPendente() * 1.6);
   return Math.round(pShelf * 0.4 + pChao * 0.25 + pMeias * 0.2 + pStock * 0.15);
 }
+/* ajudas de teste */
+export function debugSujarTudo(frac) {
+  for (const i of chaoTiles) chao[i] = Math.random() < (frac == null ? 1 : frac) ? 1 : 0;
+}
+export function debugRota(x, y) { return calcularRota(A.x, A.y, x, y); }
+export function debugEstado() {
+  return {
+    tarefas: tarefas.map(t => ({ id: t.id, feito: t.feito })),
+    arrumacao: arrumacaoMedia(),
+    chao: percentChaoLimpo(),
+    stock: stockPendente(),
+    caixas: caixasStock.map(c => ({ x: c.x, y: c.y, pares: c.pares })),
+    meias: meiasChao.map(m => ({ x: m.x, y: m.y })),
+    prateleiras: prateleiras.map(p => ({ key: p.key, arrumacao: p.arrumacao, x: p.frente.x, y: p.frente.y })),
+    clientes: clientes.map(c => ({ id: c.id, estado: c.estado, x: c.x, y: c.y, paciencia: c.paciencia })),
+    carrega: A.carrega ? A.carrega.tipo : null,
+    andreia: { x: A.x, y: A.y },
+    sujos: (() => { const out = []; for (const i of chaoTiles) if (chao[i] === 1) out.push([(i % MW) * 16 + 8, ((i / MW) | 0) * 16 + 8]); return out; })(),
+    caixaFeita: S.caixaFeita, fase: S.fase, t: S.t, dia: S.dia.id
+  };
+}
+
 /* ajuda de teste: forçar um tipo de cliente à porta */
 export function debugSpawn(tipoId) {
   const c = criarCliente(MAP.portaLoja);

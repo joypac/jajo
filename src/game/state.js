@@ -6,8 +6,25 @@ export const DURACAO_NORMAL = 200;   // segundos de 09:00 às 18:00
 export const DURACAO_ULTIMA = 100;   // a última hora
 export const DURACAO_TOTAL = DURACAO_NORMAL + DURACAO_ULTIMA;
 
+/* ---------- como corre o dia ----------
+   Nem todos os dias são iguais. Multiplicadores:
+   clientes > 1 = mais tempo entre clientes (mais calmo).       */
+export const DIAS = [
+  { id: 'calmo',      nome: 'Hoje está um dia calmo.',        peso: 30, clientes: 1.30, stock: 0.75, sujidade: 0.70, desarruma: 0.78 },
+  { id: 'normal',     nome: 'Hoje parece um dia normal.',     peso: 45, clientes: 1.00, stock: 1.00, sujidade: 1.00, desarruma: 1.00 },
+  { id: 'complicado', nome: 'Hoje isto promete.',             peso: 25, clientes: 0.84, stock: 1.18, sujidade: 1.25, desarruma: 1.20 }
+];
+
+export function sortearDia() {
+  const total = DIAS.reduce((a, d) => a + d.peso, 0);
+  let r = Math.random() * total;
+  for (const d of DIAS) { r -= d.peso; if (r <= 0) return d; }
+  return DIAS[1];
+}
+
 export const S = {
   t: 0,
+  dia: DIAS[1],
   fase: 'normal',        // normal | cutscene | ultima | fim
   energia: 100,
   caixaFeita: false,
@@ -22,6 +39,7 @@ export const S = {
 
 export function resetTurno() {
   S.t = 0;
+  S.dia = sortearDia();
   S.fase = 'normal';
   S.energia = 100;
   S.caixaFeita = false;
