@@ -27,7 +27,7 @@ export function perguntaPara(tipo) {
 export function criarCliente(porta) {
   const tipo = tipoAleatorio();
   const spr = tipo.sprite != null
-    ? CLIENTS[tipo.sprite % CLIENTS.length]          // O SENHOR é sempre o mesmo
+    ? CLIENTS[tipo.sprite % CLIENTS.length]          // o senhor Alberto é sempre o mesmo
     : CLIENTS[(Math.random() * CLIENTS.length) | 0];
   return {
     id: proximoId++,
