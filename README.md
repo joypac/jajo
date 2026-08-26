@@ -1,6 +1,6 @@
-# 🧦 ANDREIA — A LOJA DAS MEIAS
+# 🧦 LOJA DAS MEIAS
 
-Um jogo de gestão caótica em pixel art. Um turno na loja de meias.
+Um jogo de gestão caótica em pixel art. Um turno na Loja das Meias, com a Andreia.
 Entram clientes sem parar, quase ninguém compra nada, chega stock a toda a hora,
 há meias no chão, na rua e no teto — e a Andreia faz literalmente tudo.
 

@@ -152,23 +152,34 @@ const bubbleLayer = el('bubbles');
 const bubbleEls = new Map();
 
 export function syncBubbles(lista, camX, camY, escala) {
+  const larg = bubbleLayer.clientWidth || 1;
+  const alt = bubbleLayer.clientHeight || 1;
   const vivos = new Set();
+  let legendas = 0;
   for (const b of lista) {
     vivos.add(b);
     let d = bubbleEls.get(b);
     if (!d) {
       d = document.createElement('div');
-      d.className = 'bub' + (b.acao ? ' acao' : '');
-      d.textContent = b.texto;
       bubbleLayer.appendChild(d);
       bubbleEls.set(b, d);
     }
-    if (d.textContent !== b.texto) d.textContent = b.texto;
-    const larg = bubbleLayer.clientWidth || 1;
-    const margem = larg * 0.22;
-    const lx = Math.max(margem, Math.min(larg - margem, (b.x - camX) * escala));
-    d.style.left = Math.round(lx) + 'px';
-    d.style.top = Math.max(14, Math.round((b.y - camY) * escala)) + 'px';
+    const sx = (b.x - camX) * escala;
+    const sy = (b.y - camY) * escala;
+    // quem está fora do ecrã (a Sónia lá no canto, por exemplo) aparece
+    // como legenda em baixo, senão perdia-se a fala
+    const fora = sx < larg * 0.12 || sx > larg * 0.88 || sy < alt * 0.10 || sy > alt * 0.94;
+    const texto = (fora && b.quem) ? b.quem + ': ' + b.texto : b.texto;
+    if (d.textContent !== texto) d.textContent = texto;
+    d.className = 'bub' + (b.acao ? ' acao' : '') + (fora ? ' fora' : '');
+    if (fora) {
+      d.style.left = Math.round(larg / 2) + 'px';
+      d.style.top = Math.round(alt - 22 - legendas * 30) + 'px';
+      legendas++;
+    } else {
+      d.style.left = Math.round(sx) + 'px';
+      d.style.top = Math.round(sy) + 'px';
+    }
     d.style.opacity = b.t < 0.35 ? String(Math.max(0, b.t / 0.35)) : '1';
     if (b.cor && d.dataset.cor !== b.cor) {
       d.dataset.cor = b.cor;
@@ -180,6 +191,7 @@ export function syncBubbles(lista, camX, camY, escala) {
     if (!vivos.has(b)) { d.remove(); bubbleEls.delete(b); }
   }
 }
+
 export function limparBubbles() {
   for (const [, d] of bubbleEls) d.remove();
   bubbleEls.clear();

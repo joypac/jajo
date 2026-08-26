@@ -1,5 +1,5 @@
 /* ============================================================
-   shop.js - a loja. É aqui que a Andreia faz literalmente tudo.
+   shop.js - a Loja das Meias. É aqui que a Andreia faz literalmente tudo.
    ============================================================ */
 import { ctx, view, clear, text, measure } from '../engine/screen.js';
 import { draw as blit } from '../engine/sprites.js';
@@ -314,8 +314,8 @@ function chegarStock(surpresa) {
 /* ============================================================
    BOLHAS
    ============================================================ */
-function bolha(x, y, texto, cor, dur) {
-  bolhas.push({ x, y, texto, cor: cor || '#f8f4ea', t: dur || 2 });
+function bolha(x, y, texto, cor, dur, quem) {
+  bolhas.push({ x, y, texto, cor: cor || '#f8f4ea', t: dur || 2, quem });
 }
 
 /* ============================================================
@@ -493,8 +493,7 @@ function acaoInstantanea(a) {
     S.stats.sandes++;
     sfx('energia');
     UI.refreshHud(infoHud());
-    UI.toast('🥪 Andreia comeu uma sandes de atum.', 'good', 2400);
-    setTimeout(() => UI.toast('+35 ENERGIA', 'good', 1800), 500);
+    UI.toast('🥪 Andreia comeu uma sandes de atum.  +35 ENERGIA', 'good', 2400);
     bolha(A.x, A.y - 24, 'Já me sinto melhor 😊', '#6fd18a', 2);
     fx.burst(A.x, A.y - 6, { count: 8, speed: 24, life: .6, color: '#6fd18a', grav: 20 });
     return true;
@@ -504,8 +503,7 @@ function acaoInstantanea(a) {
     S.stats.cafes++;
     sfx('energia');
     UI.refreshHud(infoHud());
-    UI.toast('☕ Andreia bebeu um café.', 'good', 2200);
-    setTimeout(() => UI.toast('+15 ENERGIA', 'good', 1600), 500);
+    UI.toast('☕ Andreia bebeu um café.  +15 ENERGIA', 'good', 2200);
     bolha(A.x, A.y - 24, 'Era mesmo disto que eu precisava.', '#6fd18a', 2);
     return true;
   }
@@ -576,8 +574,8 @@ function atualizarConversas(dt) {
     if (c.segT > 0) continue;
     if (!c.seg.length) { concluirAtendimento(c, c.segBoa); continue; }
     const [quem, texto] = c.seg.shift();
-    if (quem === 'ANDREIA') bolha(A.x, A.y - 24, texto, '#ffc44d', 2);
-    else bolha(c.x, c.y - 22, texto, c.tipo.cor, 2);
+    if (quem === 'ANDREIA') bolha(A.x, A.y - 24, texto, '#ffc44d', 2, 'ANDREIA');
+    else bolha(c.x, c.y - 22, texto, c.tipo.cor, 2, quem === 'ALBERTO' ? 'SR. ALBERTO' : 'CLIENTE');
     c.segT = 1.1 + texto.length * 0.022;
   }
 }
@@ -667,8 +665,8 @@ function soniaAmbiente() {
   const proxima = () => {
     if (i >= falas.length) return;
     const [quem, texto] = falas[i++];
-    if (quem === 'SÓNIA') bolha(SONIA.x, SONIA.y - 26, texto, '#9fd4ea', 2);
-    else bolha(A.x, A.y - 24, texto, '#ffc44d', 2);
+    if (quem === 'SÓNIA') bolha(SONIA.x, SONIA.y - 26, texto, '#9fd4ea', 2.2, 'SÓNIA');
+    else bolha(A.x, A.y - 24, texto, '#ffc44d', 2.2, 'ANDREIA');
     setTimeout(proxima, 1200);
   };
   proxima();

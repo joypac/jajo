@@ -1,5 +1,5 @@
 /* ============================================================
-   ANDREIA - A LOJA DAS MEIAS
+   LOJA DAS MEIAS
    main.js - arranque e ciclo do jogo
    ============================================================ */
 import { resize, isTouch } from './engine/screen.js';
