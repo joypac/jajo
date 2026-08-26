@@ -80,17 +80,21 @@ export function initInput() {
     try { stickEl.setPointerCapture(e.pointerId); } catch (_) {}
   };
 
+  /* O polegar não anda muito: a velocidade máxima chega-se com pouco
+     desvio. A zona morta é radial (não por eixo), senão as diagonais
+     ficavam a saltar. */
+  const MORTO = 5;
   const dragStick = e => {
     if (e.pointerId !== stickId) return;
-    let dx = e.clientX - stickCx, dy = e.clientY - stickCy;
-    const d = Math.hypot(dx, dy) || 1;
-    const max = stickR;
-    const k = Math.min(1, d / max);
+    const dx = e.clientX - stickCx, dy = e.clientY - stickCy;
+    const d = Math.hypot(dx, dy);
+    if (d <= MORTO) { move.x = 0; move.y = 0; setKnob(0, 0); return; }
+    const cheio = Math.max(24, stickR * 0.55);      // desvio para velocidade máxima
+    const k = Math.min(1, (d - MORTO) / (cheio - MORTO));
     move.x = (dx / d) * k;
     move.y = (dy / d) * k;
-    if (Math.abs(move.x) < 0.18) move.x = 0;
-    if (Math.abs(move.y) < 0.18) move.y = 0;
-    setKnob((dx / d) * Math.min(d, max), (dy / d) * Math.min(d, max));
+    const visual = Math.min(d, stickR);
+    setKnob((dx / d) * visual, (dy / d) * visual);
   };
 
   const endStick = e => {
@@ -132,15 +136,38 @@ export function initInput() {
   bind('btn-b', 'b');
 }
 
+/* O dedo nunca aponta exatamente a direito. Sem isto a Andreia
+   ia sempre um bocadinho de lado, roçava nas estantes e o sprite
+   andava a saltar entre "de frente" e "de lado".
+   Encaixamos em 8 direções, com uma zona larga para cima/baixo/
+   esquerda/direita: só se anda na diagonal quando é mesmo de propósito. */
+const SETOR_CARDEAL = 30 * Math.PI / 180;   // +-30 graus agarra a direção certa
+
+function encaixar(x, y) {
+  const d = Math.hypot(x, y);
+  if (d < 0.001) return { x: 0, y: 0 };
+  const ang = Math.atan2(y, x);
+  const quarto = Math.PI / 2;
+  const cardeal = Math.round(ang / quarto) * quarto;
+  let alvo;
+  if (Math.abs(((ang - cardeal + Math.PI) % (2 * Math.PI)) - Math.PI) <= SETOR_CARDEAL) {
+    alvo = cardeal;                                   // perto de uma direção "a direito"
+  } else {
+    alvo = Math.round(ang / (Math.PI / 4)) * (Math.PI / 4);   // diagonal assumida
+  }
+  return { x: Math.cos(alvo) * d, y: Math.sin(alvo) * d };
+}
+
 /** vetor de movimento final (teclado tem prioridade se estiver a ser usado) */
 export function moveVector() {
-  let x = (keys.right ? 1 : 0) - (keys.left ? 1 : 0);
-  let y = (keys.down ? 1 : 0) - (keys.up ? 1 : 0);
+  const x = (keys.right ? 1 : 0) - (keys.left ? 1 : 0);
+  const y = (keys.down ? 1 : 0) - (keys.up ? 1 : 0);
   if (x || y) {
     const d = Math.hypot(x, y);
     return { x: x / d, y: y / d };
   }
   const d = Math.hypot(move.x, move.y);
-  if (d > 1) return { x: move.x / d, y: move.y / d };
-  return { x: move.x, y: move.y };
+  const mx = d > 1 ? move.x / d : move.x;
+  const my = d > 1 ? move.y / d : move.y;
+  return encaixar(mx, my);
 }

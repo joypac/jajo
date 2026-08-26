@@ -332,9 +332,9 @@ function musicaDaArea() {
 }
 
 function velocidade() {
-  let v = 48;
-  if (A.carrega && A.carrega.tipo === 'caixa') v = 36;
-  if (A.carrega && A.carrega.tipo === 'esfregona') v = 42;
+  let v = 54;
+  if (A.carrega && A.carrega.tipo === 'caixa') v = 41;
+  if (A.carrega && A.carrega.tipo === 'esfregona') v = 47;
   if (S.energia <= 0) v *= 0.62;
   else if (S.energia < 25) v *= 0.82;
   return v;
@@ -346,7 +346,7 @@ function moverAndreia(dt) {
   const dx = v.x * sp * dt, dy = v.y * sp * dt;
   A.mov = (v.x !== 0 || v.y !== 0);
   if (A.mov) {
-    if (Math.abs(v.x) > Math.abs(v.y)) A.dir = v.x > 0 ? 'right' : 'left';
+    if (Math.abs(v.x) >= Math.abs(v.y) - 0.001) A.dir = v.x > 0 ? 'right' : 'left';
     else A.dir = v.y > 0 ? 'down' : 'up';
     A.anim += dt;
     A.passo += Math.abs(dx) + Math.abs(dy);

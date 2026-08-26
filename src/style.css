@@ -217,13 +217,13 @@ body.touch #touch{ display:block !important; }
 
 #stick{
   position:absolute; left:calc(var(--t)*6px); bottom:calc(var(--t)*6px);
-  width:calc(var(--t)*42px); height:calc(var(--t)*42px); border-radius:50%;
+  width:calc(var(--t)*36px); height:calc(var(--t)*36px); border-radius:50%;
   background:rgba(36,26,62,.55); border:calc(var(--t)*1px) solid rgba(248,244,234,.35);
   pointer-events:auto; touch-action:none;
 }
 #stick-knob{
-  position:absolute; left:50%; top:50%; width:calc(var(--t)*18px); height:calc(var(--t)*18px);
-  margin-left:calc(var(--t)*-9px); margin-top:calc(var(--t)*-9px); border-radius:50%;
+  position:absolute; left:50%; top:50%; width:calc(var(--t)*16px); height:calc(var(--t)*16px);
+  margin-left:calc(var(--t)*-8px); margin-top:calc(var(--t)*-8px); border-radius:50%;
   background:rgba(248,244,234,.75); border:calc(var(--t)*1px) solid var(--edge);
 }
 #abtns{ position:absolute; right:calc(var(--t)*6px); bottom:calc(var(--t)*6px);
