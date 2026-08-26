@@ -75,7 +75,37 @@ export const PERGUNTAS = [
     q: 'Vocês têm casa de banho?',
     opts: ['Não temos, peço desculpa.', 'É ali no café em frente.', 'Temos, mas é só para funcionários.'],
     bom: 1
-  }
+  },
+
+  /* ---------- novas perguntas (as de cima continuam todas) ---------- */
+  { q: 'Estas são as mais quentinhas?', opts: ['Essas são de lã, sim.', 'Essas aguentam bem o inverno.', 'As de cano alto são melhores.'], bom: 0 },
+  { q: 'Tem número 47?', opts: ['Tenho, mas só em preto.', 'Vou ver no stock.', 'Até ao 46 tenho de tudo.'], bom: 0 },
+  { q: 'Isto é para oferecer.', opts: ['Então leve estas, é sempre um sucesso.', 'Qual é a cor favorita da pessoa?', 'Quer que embrulhe?'], bom: 1 },
+  { q: 'Estas ficam largas?', opts: ['Essas assentam bem.', 'Essas têm mais elastano, seguram.', 'Depende um bocadinho do pé.'], bom: 1 },
+  { q: 'Não têm nada mais simples?', opts: ['Simples tenho estas, lisas.', 'Estas pretas não têm nada.', 'Mais simples é ir descalço.'], bom: 0 },
+  { q: 'Isto desbota?', opts: ['À primeira lavagem larga um bocadinho.', 'Essas não, essas são tingidas.', 'Lave com cores parecidas.'], bom: 2 },
+  { q: 'Tem para criança?', opts: ['Tenho, é esta prateleira.', 'Tenho, mas acabaram as pequeninas.', 'Do 24 ao 34.'], bom: 0 },
+  { q: 'Estas dão para andar muito a pé?', opts: ['Essas são desportivas, aguentam.', 'Essas têm almofada no calcanhar.', 'Eu ando com estas o dia todo.'], bom: 1 },
+  { q: 'Vocês têm aquelas invisíveis?', opts: ['Tenho, são estas.', 'Essas escorregam um bocadinho.', 'Estas têm silicone, não caem.'], bom: 2 },
+  { q: 'Isto é fabricado onde?', opts: ['Estas são portuguesas.', 'Vem escrito na embalagem.', 'Essas são do norte.'], bom: 0 },
+  { q: 'Tem meias antiderrapantes?', opts: ['Para casa, tenho estas.', 'Com pontinhos por baixo, sim.', 'Essas são ótimas para andar em casa.'], bom: 1 },
+  { q: 'A minha mulher usa sempre estas.', opts: ['Então leve duas.', 'Essas saem muito.', 'Boa escolha 😊'], bom: 0 },
+  { q: 'Isto não aperta na perna?', opts: ['Esta não aperta tanto.', 'Esta tem menos elastano.', 'Essa é a mais folgada que tenho.'], bom: 0 },
+  { q: 'Faz desconto?', opts: ['O preço é este, peço desculpa.', 'Se levar três, sai melhor.', 'Isso tinha de perguntar à Sónia.'], bom: 1 },
+  { q: 'Aceitam multibanco?', opts: ['Aceitamos, sim.', 'Aceitamos a partir de cinco euros.', 'Aceitamos tudo menos cheques.'], bom: 0 },
+  { q: 'Isto vem em par?', opts: ['Vem em par, sim.', 'Vem, senão era esquisito.', 'Essas vêm em três pares.'], bom: 0 },
+  { q: 'Tem sacos?', opts: ['Tenho, é um cêntimo.', 'Tenho, olhe.', 'Ponho eu no saco 😊'], bom: 1 },
+  { q: 'Estas são grossas?', opts: ['Médias, diria eu.', 'Grossas são as de lã.', 'Essas são fininhas.'], bom: 1 },
+  { q: 'A senhora aqui do lado disse-me para vir cá.', opts: ['Que simpática 😊', 'Ainda bem.', 'Depois diga-lhe obrigada.'], bom: 0 },
+  { q: 'Eu queria umas iguais às que tinha.', opts: ['E como eram?', 'Não faz mal, veja estas.', 'Se souber a marca, eu procuro.'], bom: 0 },
+  { q: 'Não põem isto na máquina de secar, pois não?', opts: ['Não convém.', 'Encolhe logo.', 'Eu estendo sempre as minhas.'], bom: 0 },
+  { q: 'Estas duram?', opts: ['Estas duram bastante.', 'Esta é 100% algodão, mas vai-se gastar mais.', 'Depende do uso.'], bom: 0 },
+  { q: 'Ainda estão abertos?', opts: ['Ainda estamos, sim 😊', 'Até às sete.', 'Faltam uns minutinhos, mas diga.'], bom: 0 },
+  { q: 'Tem meias de compressão médica?', opts: ['Tenho estas, de compressão.', 'E problemas de circulação, tem?', 'Essas são as mais fortes que tenho.'], bom: 1 },
+  { q: 'Posso pagar com moedas?', opts: ['Pode, claro 😊', 'Pode, eu conto.', 'Pode, até dá jeito para a caixa.'], bom: 2 },
+  { q: 'Tem daquelas de bolinhas?', opts: ['De bolinhas tenho estas.', 'Bolinhas só em azul.', 'Tenho de riscas, serve?'], bom: 0 },
+  { q: 'Qual é a sua cor favorita?', opts: ['A minha? Preto 😊', 'Depende do dia.', 'Isso agora sou eu a escolher?'], bom: 0 },
+  { q: 'Estas servem para uma pessoa que está acamada?', opts: ['Estas, sem costura, são as melhores.', 'Estas não apertam nada.', 'Tem diabetes?'], bom: 0 }
 ];
 
 /* ---------- tipos de cliente ---------- */
@@ -86,13 +116,35 @@ export const TIPOS_CLIENTE = [
   { id: 'volta',      nome: 'vai dar uma volta',  perguntas: 1, compra: 0.05, paciencia: 7,  desarruma: 0.8, cor: '#a89ec4' },
   { id: 'especifico', nome: 'quer algo muito específico', perguntas: 2, compra: 0.12, paciencia: 10, desarruma: 1.6, cor: '#6fd18a' },
   { id: 'experimenta',nome: 'experimenta tudo',   perguntas: 1, compra: 0.08, paciencia: 14, desarruma: 2.4, cor: '#ff6b6b' },
-  { id: 'comprador',  nome: 'vai mesmo comprar',  perguntas: 1, compra: 0.85, paciencia: 11, desarruma: 0.6, cor: '#6fd18a' }
+  { id: 'comprador',  nome: 'vai mesmo comprar',  perguntas: 1, compra: 0.85, paciencia: 11, desarruma: 0.6, cor: '#6fd18a' },
+  /* ---- novos tipos (os de cima continuam todos) ---- */
+  { id: 'preocupado', nome: 'está preocupado contigo', perguntas: 1, compra: 0.12, paciencia: 13, desarruma: 0.4, cor: '#9fd4ea', pool: 'preocupado' },
+  { id: 'conversa',   nome: 'só quer conversar',    perguntas: 1, compra: 0.06, paciencia: 10, desarruma: 0.5, cor: '#a89ec4', pool: 'conversa' },
+  { id: 'preco',      nome: 'pergunta o preço',     perguntas: 1, compra: 0.07, paciencia: 9,  desarruma: 0.7, cor: '#ffc44d', pool: 'preco' },
+  { id: 'cor',        nome: 'quer outro verde',     perguntas: 1, compra: 0.0,  paciencia: 11, desarruma: 1.3, cor: '#6fd18a', pool: 'cor' },
+  { id: 'senhor',     nome: 'O SENHOR',             perguntas: 1, compra: 0.0,  paciencia: 24, desarruma: 0.1, cor: '#e8c88a', pool: 'senhor', sprite: 1 },
+  { id: 'provador',   nome: 'quer experimentar',    perguntas: 1, compra: 0.0,  paciencia: 12, desarruma: 1.0, cor: '#ff6b6b', pool: 'provador' }
 ];
 
 /* peso de cada tipo na porta (o comprador é raro, claro) */
-export const PESOS_CLIENTE = { indeciso: 26, pergunta: 20, olhar: 16, volta: 12, especifico: 10, experimenta: 10, comprador: 6 };
+export const PESOS_CLIENTE = {
+  indeciso: 20, pergunta: 15, olhar: 11, volta: 8, especifico: 8, experimenta: 8, comprador: 6,
+  preocupado: 7, conversa: 7, preco: 6, cor: 4, senhor: 4, provador: 2
+};
 
 /* ---------- o que dizem quando vão embora ---------- */
+export const RECUSAS_EXTRA = [
+  'Ah, está bem.',
+  'Depois vejo com calma.',
+  'Ainda vou ver noutro sítio.',
+  'Era mesmo isso que eu queria evitar.',
+  'Fica para a próxima.',
+  'Obrigada, foi só uma pergunta.',
+  'Tenho de medir o pé primeiro.',
+  'Vou almoçar e depois passo.',
+  'Já não me lembro do que vinha buscar.'
+];
+
 export const RECUSAS = [
   'Vou pensar.',
   'Vou dar uma volta e já venho.',
@@ -124,9 +176,10 @@ export const CHEGADAS = [
 export const ANDREIA_SIM = ['Sim 😊', 'Claro 😊', 'Diga 😊', 'Com certeza 😊', 'Sim, olhe 😊'];
 export const ANDREIA_CANSACO = [
   'Andreia está cansada.',
-  'Andreia precisa de café.',
+  'Andreia precisa de um café.',
   'Andreia precisa de uma sandes de atum.',
-  'Andreia já não sente as pernas.'
+  'Andreia já não sente as pernas.',
+  'Andreia precisa de um café. Ou de dois.'
 ];
 
 /* ---------- a Sónia ---------- */
@@ -168,3 +221,161 @@ export const CAIXA_PASSOS = [
   { label: 'Confirmar o total', tipo: 'confirmar' },
   { label: 'Fechar a caixa', tipo: 'ok' }
 ];
+
+
+/* ============================================================
+   NOVOS TIPOS DE CONVERSA (as perguntas de cima continuam todas)
+   Cada entrada é como uma pergunta: q + 3 respostas da Andreia.
+   "seguimento" são as falas que aparecem em balão depois da resposta.
+   "nuncaCompra" é para quem, honestamente, nunca ia comprar.
+   ============================================================ */
+
+/* clientes que percebem que a Andreia está cansada */
+export const PERGUNTAS_PREOCUPADO = [
+  {
+    q: 'Está tudo bem consigo?',
+    opts: ['Sim, sim 😊', 'Está tudo, obrigada.', 'Hoje está um bocadinho corrido.'], bom: 0,
+    seguimento: [['CLIENTE', 'Tem a certeza? Parece cansada.'], ['ANDREIA', 'É só um bocadinho.']]
+  },
+  {
+    q: 'Você está sempre de um lado para o outro.',
+    opts: ['Pois, hoje está complicado.', 'É o que há 😊', 'Já me habituei.'], bom: 0,
+    seguimento: [['CLIENTE', 'Devia parar um bocadinho.'], ['ANDREIA', 'Logo paro 😊']]
+  },
+  {
+    q: 'Não está muito cansada?',
+    opts: ['Um bocadinho, mas está tudo bem.', 'Estou bem, obrigada 😊', 'Estou, mas passa.'], bom: 0,
+    seguimento: [['CLIENTE', 'Não se esqueça de descansar.'], ['ANDREIA', 'Obrigada 😊']]
+  },
+  {
+    q: 'Está aqui sozinha?',
+    opts: ['A Sónia está ali.', 'Hoje é quase 😊', 'Está tudo controlado.'], bom: 1,
+    seguimento: [['CLIENTE', 'Ah. Pensei que estivesse sozinha.'], ['ANDREIA', 'Às vezes parece 😊']]
+  },
+  {
+    q: 'Já almoçou?',
+    opts: ['Ainda não, mas vou já.', 'Vou comer uma sandes ali em frente.', 'Já, obrigada 😊'], bom: 1,
+    seguimento: [['CLIENTE', 'Coma qualquer coisa, olhe.'], ['ANDREIA', 'Como, sim 😊']]
+  },
+  {
+    q: 'Não param de entrar pessoas, pois não?',
+    opts: ['Hoje não 😊', 'Está sempre assim.', 'É bom sinal.'], bom: 0,
+    seguimento: [['CLIENTE', 'Coitada.'], ['ANDREIA', 'Obrigada 😊']]
+  }
+];
+
+/* O SENHOR. Aparece sempre. A consulta é dele. */
+export const CONVERSAS_SENHOR = [
+  {
+    q: 'Então, Andreia, fui ao hospital.',
+    opts: ['Ah, sim?', 'Espero que esteja tudo bem.', 'E correu bem?'], bom: 0, nuncaCompra: true,
+    seguimento: [['SENHOR', 'Pois. Tive lá uma coisa qualquer.'], ['ANDREIA', 'Espero que esteja tudo bem.'], ['SENHOR', 'Também eu.']]
+  },
+  {
+    q: 'Agora tenho tido um problema com os vizinhos.',
+    opts: ['Ai, isso é chato.', 'Espero que se resolva.', 'A sério?'], bom: 0, nuncaCompra: true,
+    seguimento: [['SENHOR', 'Pois é.'], ['ANDREIA', 'Espero que se resolva.'], ['SENHOR', 'Hei-de resolver.']]
+  },
+  {
+    q: 'Hoje estava um trânsito...',
+    opts: ['Está, está.', 'Imagino.', 'Nem me diga.'], bom: 0, nuncaCompra: true,
+    seguimento: [['SENHOR', 'Demorei imenso a chegar.'], ['ANDREIA', 'Imagino.'], ['SENHOR', 'Uma coisa impressionante.']]
+  },
+  {
+    q: 'Está um tempo horrível.',
+    opts: ['Está mesmo.', 'Pois está.', 'E dizem que ainda piora.'], bom: 0, nuncaCompra: true,
+    seguimento: [['SENHOR', 'Ontem também esteve.'], ['ANDREIA', 'Esteve, esteve.']]
+  },
+  {
+    q: 'Dormi mal esta noite.',
+    opts: ['Ai que chatice.', 'Não descansou nada, então.', 'Isso sente-se o dia todo.'], bom: 1, nuncaCompra: true,
+    seguimento: [['SENHOR', 'Acordei às quatro.'], ['ANDREIA', 'Que horas.'], ['SENHOR', 'Pois.']]
+  },
+  {
+    q: 'Tive de esperar duas horas na consulta.',
+    opts: ['Duas horas?', 'Isso é muito tempo.', 'E depois foi rápido, aposto.'], bom: 2, nuncaCompra: true,
+    seguimento: [['SENHOR', 'Duas horas e vinte.'], ['ANDREIA', 'Credo.'], ['SENHOR', 'E depois foram cinco minutos.']]
+  },
+  {
+    q: 'Rebentou-me um cano em casa.',
+    opts: ['Ai não!', 'E ficou tudo alagado?', 'Isso dá um trabalho...'], bom: 1, nuncaCompra: true,
+    seguimento: [['SENHOR', 'Ficou aquilo tudo num charco.'], ['ANDREIA', 'Que chatice.']]
+  },
+  {
+    q: 'Lembra-se do que lhe disse dos vizinhos?',
+    opts: ['Lembro, sim.', 'Ah, e então?', 'Resolveu-se?'], bom: 0, nuncaCompra: true,
+    seguimento: [['SENHOR', 'Pois. Continua na mesma.'], ['ANDREIA', 'Pois...'], ['SENHOR', 'Enfim.']]
+  },
+  {
+    q: 'Ligou-me o meu genro ontem.',
+    opts: ['Ah, que bom.', 'E estava tudo bem?', 'Sim?'], bom: 0, nuncaCompra: true,
+    seguimento: [['SENHOR', 'Era só para perguntar uma coisa.'], ['ANDREIA', 'Ah.'], ['SENHOR', 'Já nem me lembro o quê.']]
+  },
+  {
+    q: 'Fui ao médico outra vez.',
+    opts: ['E o que é que ele disse?', 'Espero que esteja melhor.', 'Outra vez?'], bom: 0, nuncaCompra: true,
+    seguimento: [['SENHOR', 'Disse para eu andar mais.'], ['ANDREIA', 'E anda?'], ['SENHOR', 'Venho cá, não venho?']]
+  },
+  {
+    q: 'Andreia, tenho estado preocupado com uma coisa.',
+    opts: ['Com o quê?', 'Diga.', 'Espero que não seja nada.'], bom: 0, nuncaCompra: true,
+    seguimento: [['SENHOR', 'É uma luz que se acendeu no carro.'], ['ANDREIA', 'Ah.'], ['SENHOR', 'Deve ser alguma coisa.']]
+  },
+  {
+    q: 'Estive à espera do autocarro quarenta minutos.',
+    opts: ['Quarenta?', 'E chegou algum?', 'Isso é uma vergonha.'], bom: 1, nuncaCompra: true,
+    seguimento: [['SENHOR', 'Vieram dois ao mesmo tempo.'], ['ANDREIA', 'É sempre assim.'], ['SENHOR', 'É sempre.']]
+  }
+];
+
+/* conversa de circunstância */
+export const SMALL_TALK = [
+  { q: 'Bom dia.', opts: ['Bom dia 😊', 'Bom dia, diga.', 'Olá, bom dia.'], bom: 0,
+    seguimento: [['CLIENTE', 'Era só para ver.'], ['ANDREIA', 'Esteja à vontade 😊']] },
+  { q: 'Boa tarde.', opts: ['Boa tarde 😊', 'Boa tarde, faça favor.', 'Olá 😊'], bom: 0 },
+  { q: 'Está muito calor hoje.', opts: ['Está mesmo.', 'E ainda agora começou.', 'Aqui dentro dá-se bem.'], bom: 0 },
+  { q: 'Está muito frio hoje.', opts: ['Está gelado.', 'Precisa de umas de lã 😊', 'Está, sim.'], bom: 1 },
+  { q: 'Tem muita gente hoje.', opts: ['Hoje está movimentado 😊', 'Tem, tem.', 'E ainda agora abrimos.'], bom: 0 },
+  { q: 'Está sempre tão arrumadinha esta loja.', opts: ['Obrigada 😊', 'Faço o que posso 😊', 'Hoje nem tanto.'], bom: 0,
+    seguimento: [['CLIENTE', 'Está um brinquinho.'], ['ANDREIA', 'Obrigada 😊']] },
+  { q: 'Vocês abrem ao sábado?', opts: ['Abrimos até às duas.', 'Abrimos, sim.', 'Ao sábado é a Sónia.'], bom: 0 },
+  { q: 'Isto aqui era uma sapataria, não era?', opts: ['Era, há muitos anos.', 'Acho que era, sim.', 'Agora são meias 😊'], bom: 0 }
+];
+
+/* "quanto é?" */
+export const PERGUNTAS_PRECO = [
+  { q: 'Quanto é?', opts: ['São quatro e cinquenta.', 'Esse par é três e noventa.', 'Esse é seis euros.'], bom: 0,
+    seguimento: [['CLIENTE', 'Ah.'], ['CLIENTE', '...'], ['CLIENTE', 'Está bem.']] },
+  { q: 'E este, quanto custa?', opts: ['Esse é cinco euros.', 'Esse está em promoção: três.', 'Esse é o mais caro, sete.'], bom: 1,
+    seguimento: [['CLIENTE', 'Hm.'], ['CLIENTE', 'Obrigado.']] },
+  { q: 'Isto não é um bocadinho caro?', opts: ['É o preço de custo mais um bocadinho.', 'É a qualidade, olhe.', 'Há mais baratas, olhe estas.'], bom: 2,
+    seguimento: [['CLIENTE', 'Pois.'], ['ANDREIA', 'Pois 😊']] }
+];
+
+/* o verde que nunca é o verde certo */
+export const PERGUNTAS_COR = [
+  { q: 'Tem em verde?', opts: ['Tenho esta.', 'Verde tenho estas duas.', 'Verde só me resta este.'], bom: 0, nuncaCompra: true,
+    seguimento: [['CLIENTE', 'Não. Verde mesmo.'], ['ANDREIA', 'Esta é verde.'], ['CLIENTE', 'Mas eu queria outro verde.']] },
+  { q: 'Tem em azul?', opts: ['Azul tenho estas.', 'Tenho azul-escuro e azul-claro.', 'Esta é azul.'], bom: 1, nuncaCompra: true,
+    seguimento: [['CLIENTE', 'Esse azul é muito azul.'], ['ANDREIA', 'Ah.'], ['CLIENTE', 'Eu queria um azul mais... normal.']] },
+  { q: 'Isto é bege ou é creme?', opts: ['Eu diria bege.', 'Isso é creme.', 'É bege-creme.'], bom: 2, nuncaCompra: true,
+    seguimento: [['CLIENTE', 'Porque eu queria bege.'], ['ANDREIA', 'Este é bege 😊'], ['CLIENTE', 'Não é o meu bege.']] }
+];
+
+/* muito raramente: alguém quer experimentar as meias */
+export const PERGUNTAS_PROVADOR = [
+  { q: 'Posso experimentar?', opts: ['Não pode, peço desculpa.', 'Por causa da higiene, não dá.', 'Pode ver o número na embalagem.'], bom: 2, nuncaCompra: true,
+    seguimento: [['CLIENTE', 'Então como é que eu sei se me ficam boas?'], ['ANDREIA', 'Pelo número costuma dar certinho 😊'], ['CLIENTE', 'Pff.']] },
+  { q: 'Não há um provador para meias?', opts: ['Não há, peço desculpa.', 'Provador de meias não temos 😊', 'Nunca ninguém pediu isso.'], bom: 1, nuncaCompra: true,
+    seguimento: [['CLIENTE', 'E se não me servirem?'], ['ANDREIA', 'Se não servirem, troco 😊'], ['CLIENTE', 'Isso já é outra conversa.']] }
+];
+
+/* pools por tipo de cliente */
+export const POOLS = {
+  preocupado: PERGUNTAS_PREOCUPADO,
+  senhor: CONVERSAS_SENHOR,
+  conversa: SMALL_TALK,
+  preco: PERGUNTAS_PRECO,
+  cor: PERGUNTAS_COR,
+  provador: PERGUNTAS_PROVADOR
+};

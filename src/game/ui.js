@@ -49,9 +49,10 @@ export function toast(texto, tipo, ms) {
 /* ---------------- lista da última hora ---------------- */
 export function showTasklist(on) { tasklist.classList.toggle('hidden', !on); }
 export function renderTasklist(tarefas) {
-  tasklistItems.innerHTML = tarefas.map(t =>
-    '<li class="' + (t.feito ? 'done' : '') + '">' + (t.feito ? '✔ ' : '□ ') + t.label + '</li>'
+  const novo = tarefas.map(t =>
+    '<li class="' + (t.feito ? 'done' : '') + '">' + (t.feito ? '✓ ' : '☐ ') + t.label + '</li>'
   ).join('');
+  if (tasklistItems.innerHTML !== novo) tasklistItems.innerHTML = novo;
 }
 
 /* ---------------- diálogo curto (cutscene) ---------------- */

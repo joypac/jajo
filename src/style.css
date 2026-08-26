@@ -40,7 +40,7 @@ body.touch.portrait #stage{ align-items:flex-start; padding-top:env(safe-area-in
 #ui{ position:absolute; font-size:calc(var(--s)*5px); line-height:1.55; pointer-events:none; }
 #ui button{ pointer-events:auto; font-family:inherit; }
 
-.panel, #tasklist, #talk, #serve, #caixa{
+.panel, #talk, #serve, #caixa{
   background:var(--panel);
   border:calc(var(--s)*1px) solid var(--ink);
   outline:calc(var(--s)*1px) solid var(--edge);
@@ -77,13 +77,19 @@ body.touch.portrait #stage{ align-items:flex-start; padding-top:env(safe-area-in
 
 /* ---------------- lista da última hora ---------------- */
 #tasklist{
-  position:absolute; right:calc(var(--s)*4px); top:calc(var(--s)*38px);
-  padding:calc(var(--s)*3px); font-size:calc(var(--s)*3.5px); min-width:calc(var(--s)*70px);
+  position:absolute; right:calc(var(--s)*4px); top:calc(var(--s)*20px);
+  background:rgba(13,9,24,.62);
+  border-left:calc(var(--s)*1px) solid var(--red);
+  padding:calc(var(--s)*2px) calc(var(--s)*3px);
+  font-size:calc(var(--s)*2.8px); line-height:1.45;
+  animation: listaEntra .35s steps(5);
 }
-#tasklist header{ color:var(--red); font-size:calc(var(--s)*4px); margin-bottom:calc(var(--s)*2px); }
+@keyframes listaEntra{ from{ opacity:0; transform:translateX(calc(var(--s)*8px)); } }
+#tasklist header{ color:var(--red); font-size:calc(var(--s)*3px); margin-bottom:calc(var(--s)*1.5px);
+  letter-spacing:calc(var(--s)*.3px); }
 #tasklist ul{ list-style:none; }
-#tasklist li{ color:var(--dim); padding:calc(var(--s)*.5px) 0; }
-#tasklist li.done{ color:var(--green); text-decoration:line-through; }
+#tasklist li{ color:rgba(248,244,234,.72); white-space:nowrap; }
+#tasklist li.done{ color:var(--green); opacity:.7; }
 
 /* ---------------- balões no mundo ---------------- */
 #bubbles{ position:absolute; inset:0; pointer-events:none; overflow:hidden; }

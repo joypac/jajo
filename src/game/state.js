@@ -16,7 +16,7 @@ export const S = {
     atendidos: 0, vendas: 0, recusas: 0, arrumados: 0,
     meiasChao: 0, meiasTeto: 0, meiasRua: 0, apanhadas: 0,
     stockRecebido: 0, stockArrumado: 0,
-    sandes: 0, pegadas: 0, ajudaSonia: 0, clientes: 0
+    sandes: 0, cafes: 0, pegadas: 0, ajudaSonia: 0, clientes: 0
   }
 };
 

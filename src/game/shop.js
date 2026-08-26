@@ -5,10 +5,11 @@ import { ctx, view, clear, text, measure } from '../engine/screen.js';
 import { draw as blit } from '../engine/sprites.js';
 import { TILES, DEFAULT_TILE } from '../data/tiles.js';
 import { MAP } from '../data/map.js';
-import { CHARS, PROPS, SONIA_SIT, makeSockBig } from '../data/sprites.js';
+import { CHARS, CLIENTS, PROPS, SONIA_SIT, makeSockBig } from '../data/sprites.js';
 import { MEIAS, meiaAleatoria } from '../data/socks.js';
+import { TIPOS_CLIENTE } from '../data/dialogue.js';
 import {
-  SONIA_FALAS, SONIA_SAIDA, RECUSAS, COMPRAS, ANDREIA_SIM,
+  SONIA_FALAS, SONIA_SAIDA, RECUSAS, RECUSAS_EXTRA, COMPRAS, ANDREIA_SIM,
   ANDREIA_CANSACO, EVENTOS_TEXTO, CAIXA_PASSOS
 } from '../data/dialogue.js';
 import { criarCliente, atualizarCliente, sair, verdicto } from './customers.js';
@@ -35,7 +36,7 @@ const A = {                       // a Andreia (x,y = pés)
 };
 const SONIA = { x: 0, y: 0, saindo: false, saiu: false, chama: 0, anim: 0 };
 
-let prateleiras = [], solidos = [], deco = [];
+let prateleiras = [], solidos = [], deco = [], pontosValidos = [];
 let clientes = [], caixasStock = [], meiasChao = [], meiasRua = [], meiasTeto = [];
 let chao = null, chaoMolhado = null, chaoTiles = [];
 let camX = 0, camY = 0, animT = 0;
@@ -89,15 +90,22 @@ export function iniciarTurno() {
     }
   }
 
+  construirGrelha();
+  // só usamos pontos de paragem a que os clientes conseguem mesmo chegar
+  const porta = MAP.portaLoja;
+  pontosValidos = MAP.pontosCliente.filter(p =>
+    calcularRota(porta.x * T, porta.y * T, p.x * T, p.y * T) !== null);
+  if (!pontosValidos.length) pontosValidos = MAP.pontosCliente.slice();
+
   for (let i = 0; i < 5; i++) largarMeiaEm(3 + Math.random() * 11, 6 + Math.random() * 6);
 
   tarefas = [
-    { id: 'loja', label: 'ARRUMAR A LOJA', feito: false },
-    { id: 'stock', label: 'FAZER TODO O STOCK', feito: false },
-    { id: 'caixa', label: 'FAZER A CAIXA', feito: false },
-    { id: 'chao', label: 'ESFREGAR O CHÃO', feito: false },
-    { id: 'clientes', label: 'ATENDER OS CLIENTES', feito: false },
-    { id: 'meias', label: 'APANHAR AS MEIAS', feito: false }
+    { id: 'loja', label: 'Arrumar loja', feito: false },
+    { id: 'stock', label: 'Fazer stock', feito: false },
+    { id: 'caixa', label: 'Fazer caixa', feito: false },
+    { id: 'chao', label: 'Limpar chão', feito: false },
+    { id: 'clientes', label: 'Atender', feito: false },
+    { id: 'meias', label: 'Apanhar meias', feito: false }
   ];
   UI.showTasklist(false);
   UI.esconderTudo();
@@ -127,6 +135,79 @@ export function podeAndar(px, py) {
   return !(solidoEm(px - 5, py - 3) || solidoEm(px + 5, py - 3) ||
            solidoEm(px - 5, py + 3) || solidoEm(px + 5, py + 3));
 }
+/* ------------------------------------------------------------
+   Caminhos: grelha de tiles andáveis + BFS.
+   Os clientes seguem waypoints, nunca andam "a direito contra
+   as estantes" - era isso que os deixava presos a tremer.
+   ------------------------------------------------------------ */
+let grelha = null;
+
+function construirGrelha() {
+  grelha = new Uint8Array(MW * MH);
+  for (let y = 0; y < MH; y++) {
+    for (let x = 0; x < MW; x++) {
+      grelha[y * MW + x] = podeAndar(x * T + T / 2, y * T + T / 2) ? 1 : 0;
+    }
+  }
+}
+function tileAndavel(tx, ty) {
+  if (tx < 0 || ty < 0 || tx >= MW || ty >= MH) return false;
+  return grelha[ty * MW + tx] === 1;
+}
+function tileMaisPerto(tx, ty) {
+  if (tileAndavel(tx, ty)) return [tx, ty];
+  for (let r = 1; r <= 5; r++) {
+    for (let dy = -r; dy <= r; dy++) {
+      for (let dx = -r; dx <= r; dx++) {
+        if (Math.abs(dx) !== r && Math.abs(dy) !== r) continue;
+        if (tileAndavel(tx + dx, ty + dy)) return [tx + dx, ty + dy];
+      }
+    }
+  }
+  return null;
+}
+function calcularRota(x0, y0, x1, y1) {
+  const a = tileMaisPerto(Math.floor(x0 / T), Math.floor(y0 / T));
+  const b = tileMaisPerto(Math.floor(x1 / T), Math.floor(y1 / T));
+  if (!a || !b) return null;
+  const inicio = a[1] * MW + a[0], destino = b[1] * MW + b[0];
+  if (inicio === destino) return [{ x: x1, y: y1 }];
+
+  const prev = new Int32Array(MW * MH).fill(-1);
+  prev[inicio] = -2;
+  const fila = [inicio];
+  let achou = false;
+  for (let head = 0; head < fila.length; head++) {
+    const cur = fila[head];
+    if (cur === destino) { achou = true; break; }
+    const cx = cur % MW, cy = (cur / MW) | 0;
+    const viz = [cx + 1, cy, cx - 1, cy, cx, cy + 1, cx, cy - 1];
+    for (let k = 0; k < 8; k += 2) {
+      const nx = viz[k], ny = viz[k + 1];
+      if (!tileAndavel(nx, ny)) continue;
+      const ni = ny * MW + nx;
+      if (prev[ni] !== -1) continue;
+      prev[ni] = cur;
+      fila.push(ni);
+    }
+  }
+  if (!achou) return null;
+
+  const pontos = [];
+  let cur = destino;
+  while (cur >= 0) {
+    const cx = cur % MW, cy = (cur / MW) | 0;
+    pontos.push({ x: cx * T + T / 2, y: cy * T + T / 2 });
+    const p = prev[cur];
+    if (p === -2) break;
+    cur = p;
+  }
+  pontos.reverse();
+  const ultimoTile = Math.floor(x1 / T) + ',' + Math.floor(y1 / T);
+  if (b[0] + ',' + b[1] === ultimoTile) pontos.push({ x: x1, y: y1 });
+  return pontos;
+}
+
 function idxTile(px, py) {
   const tx = Math.floor(px / T), ty = Math.floor(py / T);
   if (tx < 0 || ty < 0 || tx >= MW || ty >= MH) return -1;
@@ -305,8 +386,13 @@ function alvoDeAcao() {
   // Venezia
   const cafe = solidos.find(o => o.kind === 'balcaoCafe');
   if (cafe && maosLivres) {
-    const bx = cafe.x + cafe.w / 2, by = cafe.y + cafe.h + 6;
-    testar(bx, by, 28, { tipo: 'sandes', label: 'SANDES DE ATUM' });
+    const bx = cafe.x + cafe.w / 2, by = cafe.y + cafe.h + 7;
+    testar(bx, by, 34, { tipo: 'sandes', label: '🥪 SANDES DE ATUM' });
+  }
+  const maq = solidos.find(o => o.kind === 'maquinaCafe');
+  if (maq && maosLivres) {
+    const bx = maq.x + maq.w / 2, by = maq.y + maq.h + 7;
+    testar(bx, by, 30, { tipo: 'cafe', label: '☕ CAFÉ' });
   }
   // Sónia
   if (!SONIA.saiu && SONIA.chama > 0) testar(SONIA.x, SONIA.y + 6, 26, { tipo: 'sonia', label: 'FALAR COM A SÓNIA' });
@@ -334,13 +420,33 @@ function acaoInstantanea(a) {
     return true;
   }
   if (a.tipo === 'sonia') { falarComSonia(); return true; }
+  if (a.tipo === 'sandes') {
+    darEnergia(35);
+    S.stats.sandes++;
+    sfx('energia');
+    UI.refreshHud(infoHud());
+    UI.toast('🥪 Andreia comeu uma sandes de atum.', 'good', 2400);
+    setTimeout(() => UI.toast('+35 ENERGIA', 'good', 1800), 500);
+    bolha(A.x, A.y - 24, 'Já me sinto melhor 😊', '#6fd18a', 2);
+    fx.burst(A.x, A.y - 6, { count: 8, speed: 24, life: .6, color: '#6fd18a', grav: 20 });
+    return true;
+  }
+  if (a.tipo === 'cafe') {
+    darEnergia(15);
+    S.stats.cafes++;
+    sfx('energia');
+    UI.refreshHud(infoHud());
+    UI.toast('☕ Andreia bebeu um café.', 'good', 2200);
+    setTimeout(() => UI.toast('+15 ENERGIA', 'good', 1600), 500);
+    bolha(A.x, A.y - 24, 'Era mesmo disto que eu precisava.', '#6fd18a', 2);
+    return true;
+  }
   return false;
 }
 
 function trabalhoDuracao(tipo) {
   if (tipo === 'arrumar') return 1.0;
   if (tipo === 'stock') return 1.4;
-  if (tipo === 'sandes') return 1.6;
   return 1;
 }
 
@@ -363,12 +469,6 @@ function concluirTrabalho(w) {
     sfx('caixote');
     fx.burst(w.alvo.frente.x, w.alvo.frente.y - 10, { count: 8, speed: 26, life: .6, color: '#d4a771', grav: 20 });
     UI.toast('+' + pares + ' pares arrumados', 'good', 1500);
-  } else if (w.tipo === 'sandes') {
-    darEnergia(35);
-    S.stats.sandes++;
-    sfx('energia');
-    UI.toast('🥪 SANDES DE ATUM — ENERGIA +35', 'good', 2200);
-    bolha(A.x, A.y - 22, 'Obrigada 😊', '#6fd18a', 1.6);
   }
 }
 
@@ -389,6 +489,33 @@ function responder(c, boa) {
   c.perguntasFeitas++;
   c.atendido = true;
 
+  const seg = c.pergunta && c.pergunta.seguimento;
+  if (seg && seg.length) {
+    c.estado = 'conversa';
+    c.seg = seg.map(l => l.slice());
+    c.segT = 0.15;
+    c.segBoa = boa;
+    return;
+  }
+  concluirAtendimento(c, boa);
+}
+
+/* as falas de seguimento aparecem em balão, sem parar o jogo */
+function atualizarConversas(dt) {
+  for (const c of clientes.slice()) {
+    if (c.estado !== 'conversa') continue;
+    c.segT -= dt;
+    if (c.segT > 0) continue;
+    if (!c.seg.length) { concluirAtendimento(c, c.segBoa); continue; }
+    const [quem, texto] = c.seg.shift();
+    if (quem === 'ANDREIA') bolha(A.x, A.y - 24, texto, '#ffc44d', 2);
+    else bolha(c.x, c.y - 22, texto, c.tipo.cor, 2);
+    c.segT = 1.1 + texto.length * 0.022;
+  }
+}
+
+function concluirAtendimento(c, boa) {
+  if (!clientes.includes(c)) return;
   if (c.perguntasFeitas < c.tipo.perguntas && Math.random() < 0.75) {
     c.estado = 'ver';
     c.timer = 1.2 + Math.random() * 1.8;
@@ -399,12 +526,14 @@ function responder(c, boa) {
     S.stats.vendas++;
     sfx('registo');
     bolha(c.x, c.y - 22, COMPRAS[(Math.random() * COMPRAS.length) | 0], '#6fd18a', 2);
-    UI.toast('💰 VENDA! ' + S.stats.vendas + ' par(es) hoje', 'good', 2000);
-    fx.burst(c.x, c.y - 8, { count: 10, speed: 30, life: .7, color: '#6fd18a', grav: 30 });
+    UI.toast('VENDA! +1  (' + S.stats.vendas + ' hoje)', 'good', 2200);
+    fx.burst(c.x, c.y - 8, { count: 12, speed: 32, life: .8, color: '#6fd18a', grav: 30 });
+    setTimeout(() => bolha(A.x, A.y - 24, 'Obrigada 😊', '#ffc44d', 1.8), 500);
   } else {
     S.stats.recusas++;
     sfx('recusa');
-    bolha(c.x, c.y - 22, RECUSAS[(Math.random() * RECUSAS.length) | 0], c.tipo.cor, 2.2);
+    const pool = Math.random() < 0.5 ? RECUSAS : RECUSAS_EXTRA;
+    bolha(c.x, c.y - 22, pool[(Math.random() * pool.length) | 0], c.tipo.cor, 2.2);
   }
   sair(c, mundo);
 }
@@ -483,7 +612,7 @@ function soniaAmbiente() {
    ============================================================ */
 const mundo = {
   porta: MAP.portaLoja,
-  escolherPonto: () => MAP.pontosCliente[(Math.random() * MAP.pontosCliente.length) | 0],
+  escolherPonto: () => pontosValidos[(Math.random() * pontosValidos.length) | 0] || MAP.pontosCliente[0],
   prateleiraPerto: (px, py) => {
     let melhor = null, dm = 1e9;
     for (const p of prateleiras) {
@@ -495,24 +624,45 @@ const mundo = {
   desarrumar,
   largarMeia,
   aviso: c => { sfx('pergunta'); bolha(c.x, c.y - 22, c.saudacao, c.tipo.cor, 1.8); },
+  aoSair: c => {
+    if (c.desarrumou > 16) {
+      UI.toast('+' + Math.round(c.desarrumou) + ' MEIAS DESARRUMADAS', 'bad', 2200);
+      bolha(A.x, A.y - 24, '🙂', '#ffc44d', 1.6);
+    }
+  },
   remover: c => {
     const i = clientes.indexOf(c);
     if (i >= 0) clientes.splice(i, 1);
     if (c.estado !== 'sair' || !c.atendido) { /* nada */ }
   },
-  mover: (c, alvo, sp, dt) => {
-    const dx = alvo.x - c.x, dy = alvo.y - c.y;
-    const d = Math.hypot(dx, dy);
-    if (d < 3) { c.mov = false; return true; }
-    const vx = dx / d * sp * dt, vy = dy / d * sp * dt;
+  irPara: (c, alvo, sp, dt) => {
+    const chave = Math.round(alvo.x) + ',' + Math.round(alvo.y);
+    if (c.rotaChave !== chave) {
+      c.rota = calcularRota(c.x, c.y, alvo.x, alvo.y);
+      c.rotaChave = chave;
+      c.rotaI = 0;
+      c.tentativas = (c.tentativas || 0) + 1;
+    }
+    const rota = c.rota;
+    if (!rota || !rota.length) { c.mov = false; return true; }   // sem caminho: fica por aqui
+    if (c.rotaI >= rota.length) { c.mov = false; return true; }
+
+    let p = rota[c.rotaI];
+    let dx = p.x - c.x, dy = p.y - c.y;
+    let d = Math.hypot(dx, dy);
+    while (d < 1.5) {
+      c.rotaI++;
+      if (c.rotaI >= rota.length) { c.x = p.x; c.y = p.y; c.mov = false; return true; }
+      p = rota[c.rotaI];
+      dx = p.x - c.x; dy = p.y - c.y; d = Math.hypot(dx, dy);
+    }
+    const passo = Math.min(d, sp * dt);
+    const antes = idxTile(c.x, c.y);
+    c.x += dx / d * passo;
+    c.y += dy / d * passo;
     c.mov = true;
     if (Math.abs(dx) > Math.abs(dy)) c.dir = dx > 0 ? 'right' : 'left';
     else c.dir = dy > 0 ? 'down' : 'up';
-    const antes = idxTile(c.x, c.y);
-    if (podeAndar(c.x + vx, c.y)) c.x += vx;
-    else if (podeAndar(c.x, c.y + Math.sign(dy) * sp * dt)) c.y += Math.sign(dy) * sp * dt;
-    if (podeAndar(c.x, c.y + vy)) c.y += vy;
-    else if (podeAndar(c.x + Math.sign(dx) * sp * dt, c.y)) c.x += Math.sign(dx) * sp * dt;
     const agora = idxTile(c.x, c.y);
     if (agora !== antes) pisarCliente(agora, c);
     return false;
@@ -933,6 +1083,7 @@ register('loja', {
         fx.burst(MAP.portaLoja.x * T, MAP.portaLoja.y * T, { count: 4, speed: 18, life: .4, color: '#f8f4ea', grav: 10 });
       }
       for (const c of clientes.slice()) atualizarCliente(c, dt, mundo);
+      atualizarConversas(dt);
     }
 
     /* ---- stock ---- */
@@ -954,16 +1105,20 @@ register('loja', {
       if (tEvento <= 0) { tEvento = 11 + Math.random() * 12; eventoAleatorio(); }
     }
 
-    UI.refreshHud({
-      arrumacao: percentLoja(),
-      stock: stockPendente(),
-      meiasChao: meiasChao.length,
-      aEspera: clientes.filter(c => c.estado === 'esperar').length
-    });
+    UI.refreshHud(infoHud());
   },
 
   draw() { desenhar(); }
 });
+
+function infoHud() {
+  return {
+    arrumacao: percentLoja(),
+    stock: stockPendente(),
+    meiasChao: meiasChao.length,
+    aEspera: clientes.filter(c => c.estado === 'esperar').length
+  };
+}
 
 export function percentLoja() {
   const pShelf = arrumacaoMedia();
@@ -972,4 +1127,18 @@ export function percentLoja() {
   const pStock = Math.max(0, 100 - stockPendente() * 1.6);
   return Math.round(pShelf * 0.4 + pChao * 0.25 + pMeias * 0.2 + pStock * 0.15);
 }
+/* ajuda de teste: forçar um tipo de cliente à porta */
+export function debugSpawn(tipoId) {
+  const c = criarCliente(MAP.portaLoja);
+  const t = TIPOS_CLIENTE.find(t => t.id === tipoId);
+  if (t) {
+    c.tipo = t;
+    c.paciencia = c.pacienciaMax = t.paciencia;
+    if (t.sprite != null) c.spr = CLIENTS[t.sprite % CLIENTS.length];
+  }
+  clientes.push(c);
+  S.stats.clientes++;
+  return c;
+}
+
 export { A, clientes, prateleiras };

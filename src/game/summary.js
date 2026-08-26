@@ -58,6 +58,7 @@ register('resumo', {
       ['Stock arrumado', st.stockArrumado],
       ['Pegadas', st.pegadas],
       ['Sandes de atum', st.sandes],
+      ['Cafés', st.cafes],
       ['Ajuda da Sónia', st.ajudaSonia]
     ];
 

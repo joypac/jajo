@@ -38,7 +38,8 @@ function boot() {
         clientes: () => sh.clientes,
         prateleiras: () => sh.prateleiras,
         tp: (x, y) => { sh.A.x = x * 16; sh.A.y = y * 16; },
-        adiantar: seg => { st.S.t += seg; }
+        adiantar: seg => { st.S.t += seg; },
+        spawn: t => sh.debugSpawn(t)
       };
     });
   }
